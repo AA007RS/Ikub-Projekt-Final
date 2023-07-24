@@ -33,8 +33,5 @@ public class Room extends BaseEntity<Integer> {
             CascadeType.MERGE, CascadeType.REFRESH})
     private List<ShowTime> showTimes;
 
-    @Override
-    public Integer getId() {
-        return id;
-    }
+
 }

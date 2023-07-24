@@ -49,8 +49,4 @@ public class User extends BaseEntity<Integer> {
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Order> orders;
 
-    @Override
-    public Integer getId() {
-        return id;
-    }
 }

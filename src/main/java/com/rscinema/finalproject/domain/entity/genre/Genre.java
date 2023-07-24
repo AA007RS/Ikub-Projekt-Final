@@ -28,8 +28,4 @@ public class Genre extends BaseEntity<Integer> {
     @OneToMany(mappedBy = "genre",cascade = CascadeType.ALL)
     private List<Movie> movies;
 
-    @Override
-    public Integer getId() {
-        return id;
-    }
 }

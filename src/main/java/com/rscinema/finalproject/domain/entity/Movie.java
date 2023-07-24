@@ -45,8 +45,4 @@ public class Movie extends BaseEntity<Integer> {
     @JoinColumn(name = "genre_id",referencedColumnName = "id")
     private Genre genre;
 
-    @Override
-    public Integer getId() {
-        return id;
-    }
 }

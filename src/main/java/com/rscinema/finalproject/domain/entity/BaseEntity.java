@@ -3,6 +3,7 @@ package com.rscinema.finalproject.domain.entity;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.PrePersist;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,10 +18,16 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
-public abstract class BaseEntity<K> {
+public abstract class BaseEntity<I> {
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private I createdBy;
+    private I updatedBy;
     private boolean deleted;
-    public abstract K getId();
+
+    @PrePersist
+    public void prePersist(){
+        createdAt = LocalDateTime.now();
+    }
 }

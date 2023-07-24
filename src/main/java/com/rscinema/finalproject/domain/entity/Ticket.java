@@ -35,8 +35,4 @@ public class Ticket extends BaseEntity<Integer> {
     @JoinColumn(name = "order_id", referencedColumnName = "id")
     private Order order;
 
-    @Override
-    public Integer getId() {
-        return id;
-    }
 }

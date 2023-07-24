@@ -32,8 +32,4 @@ public class Payment extends BaseEntity<Integer> {
     @OneToOne(mappedBy = "payment",cascade = {CascadeType.DETACH,CascadeType.REFRESH})
     private Order order;
 
-    @Override
-    public Integer getId() {
-        return id;
-    }
 }

@@ -43,8 +43,4 @@ public class Order extends BaseEntity<Integer> {
     @Column(name = "order_status")
     private OrderStatus orderStatus;
 
-    @Override
-    public Integer getId() {
-        return id;
-    }
 }

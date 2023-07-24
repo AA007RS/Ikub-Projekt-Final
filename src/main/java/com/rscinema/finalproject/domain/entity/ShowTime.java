@@ -40,9 +40,4 @@ public class ShowTime extends BaseEntity<Integer> {
     @OneToMany(mappedBy = "showTime", cascade = CascadeType.ALL)
     private List<Ticket> tickets;
 
-
-    @Override
-    public Integer getId() {
-        return id;
-    }
 }
