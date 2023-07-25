@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 public class GenreMapper {
 
     public static GenreDTO toDTO(Genre genre){
+
         return GenreDTO.builder()
                 .id(genre.getId())
                 .name(genre.getMovieGenre().getValue())

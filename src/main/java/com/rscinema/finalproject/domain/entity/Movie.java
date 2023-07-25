@@ -33,7 +33,7 @@ public class Movie extends BaseEntity<Integer> {
     private Integer length;
 
     @Column(name = "description")
-    private String description  ;
+    private String description;
 
     @OneToMany(mappedBy = "movie",
             fetch = FetchType.LAZY,
@@ -41,8 +41,9 @@ public class Movie extends BaseEntity<Integer> {
     private List<ShowTime> showTimes;
 
 
-    @ManyToOne(cascade = {CascadeType.REFRESH,CascadeType.MERGE})
-    @JoinColumn(name = "genre_id",referencedColumnName = "id")
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE}
+            , fetch = FetchType.LAZY)
+    @JoinColumn(name = "genre_id", referencedColumnName = "id")
     private Genre genre;
 
 }

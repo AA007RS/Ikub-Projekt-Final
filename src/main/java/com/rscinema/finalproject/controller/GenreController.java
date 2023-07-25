@@ -28,6 +28,11 @@ public class GenreController {
         return ResponseEntity.ok(toReturn);
     }
 
+    @GetMapping("/byName/{name}")
+    public ResponseEntity<GenreDTO> findByName(@PathVariable("name")String name){
+        return ResponseEntity.ok(genreService.findGenreByName(name));
+    }
+
     @GetMapping()
     public ResponseEntity<List<GenreDTO>> findAll(){
         return ResponseEntity.ok(genreService.findAll());

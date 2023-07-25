@@ -17,6 +17,9 @@ import java.util.List;
 @Service
 public class GenreServiceImpl implements GenreService {
     private final GenreRepository genreRepository;
+
+
+
     @Override
     public GenreDTO create(GenreDTO genreDTO) {
         Genre genre = GenreMapper.toEntity(genreDTO);
@@ -29,6 +32,16 @@ public class GenreServiceImpl implements GenreService {
         return genreRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String
                         .format("Genre with id %s not found!",id)));
+    }
+
+    @Override
+    public GenreDTO findGenreByName(String genreName) {
+        MovieGenre movieGenre = MovieGenre.fromValue(genreName);
+        Genre toReturn = genreRepository.findByMovieGenre(movieGenre);
+        if(toReturn==null){
+            throw new ResourceNotFoundException(String.format("Genre %s is not created!",genreName));
+        }
+        return GenreMapper.toDTO(toReturn);
     }
 
     @Override
@@ -56,6 +69,7 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public void hardDelete(Integer id) {
-        genreRepository.deleteById(id);
+        Genre toDelete = findById(id);
+        genreRepository.delete(toDelete);
     }
 }

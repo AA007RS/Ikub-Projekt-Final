@@ -3,6 +3,8 @@ package com.rscinema.finalproject.domain.dto;
 
 import lombok.*;
 
+import java.util.List;
+
 @Builder
 @Getter
 @Setter
