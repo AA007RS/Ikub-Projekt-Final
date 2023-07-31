@@ -39,7 +39,6 @@ public class MovieMapper {
         e.setDescription(d.getDescription());
         e.setYearReleased(d.getYearReleased());
         e.setGenre(GenreMapper.toEntity(d.getGenreDTO()));
-        e.setUpdatedAt(LocalDateTime.now());
         return e;
 
     }

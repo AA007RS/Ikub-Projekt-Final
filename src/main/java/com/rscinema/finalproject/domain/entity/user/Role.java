@@ -2,13 +2,14 @@ package com.rscinema.finalproject.domain.entity.user;
 
 import com.rscinema.finalproject.domain.exception.ResourceNotFoundException;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.util.Arrays;
-
+@Getter
 @AllArgsConstructor
 public enum Role {
 
-    USER("CUSTOMER"),
+    CUSTOMER("CUSTOMER"),
     ADMIN("ADMIN");
     private final String value;
 
@@ -18,9 +19,5 @@ public enum Role {
                 .findFirst()
                 .orElseThrow(()->new ResourceNotFoundException(String
                         .format("Role %s not found!",role)));
-    }
-
-    public String getValue(){
-      return value;
     }
 }

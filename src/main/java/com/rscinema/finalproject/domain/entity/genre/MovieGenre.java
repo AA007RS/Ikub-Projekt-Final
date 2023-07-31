@@ -2,9 +2,10 @@ package com.rscinema.finalproject.domain.entity.genre;
 
 import com.rscinema.finalproject.domain.exception.ResourceNotFoundException;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.util.Arrays;
-
+@Getter
 @AllArgsConstructor
 public enum MovieGenre {
 
@@ -21,8 +22,5 @@ public enum MovieGenre {
                 .findFirst()
                 .orElseThrow(()->new ResourceNotFoundException(String
                         .format("Genre %s not found",movieGenre)));
-    }
-    public String getValue(){
-        return value;
     }
 }

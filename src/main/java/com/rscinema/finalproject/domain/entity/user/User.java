@@ -4,7 +4,13 @@ import com.rscinema.finalproject.domain.entity.BaseEntity;
 import com.rscinema.finalproject.domain.entity.order.Order;
 import jakarta.persistence.*;
 import lombok.*;
-import java.time.LocalDate;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 @Builder
@@ -14,7 +20,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
-public class User extends BaseEntity<Integer> {
+public class User extends BaseEntity<Integer> implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,11 +33,12 @@ public class User extends BaseEntity<Integer> {
     @Column(name = "last_name")
     private String lastName;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "gender")
-    private String gender;
+    private Gender gender;
 
-    @Column(name = "birth_date")
-    private LocalDate birthDate;
+    @Column(name = "age")
+    private Integer age;
 
     @Column(name = "email", unique = true)
     private String email;
@@ -49,4 +56,37 @@ public class User extends BaseEntity<Integer> {
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<Order> orders;
 
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Arrays.stream(role.name()
+                        .split(","))
+                .map(SimpleGrantedAuthority::new)
+                .toList();
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }
