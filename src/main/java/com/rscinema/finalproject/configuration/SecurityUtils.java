@@ -5,20 +5,20 @@ import org.springframework.security.oauth2.jwt.Jwt;
 
 public class SecurityUtils {
 
-    public static Integer getLoggedUserId(){
+    public static Integer getLoggedUserId() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         //(JWTs) claims are pieces of information asserted about a subject
-        if(authentication!=null && authentication.getPrincipal() instanceof Jwt){
+        if (authentication != null && authentication.getPrincipal() instanceof Jwt) {
             // handle jwt profile
             return getLoggedUser();
-        }else {
+        } else {
             //handle null authentication
             return null;
         }
     }
 
-    public static Integer getLoggedUser(){
-        var authentication = (Jwt)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return authentication.getClaim("sub");
+    public static Integer getLoggedUser() {
+        var authentication = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return Integer.valueOf(authentication.getClaim("sub"));
     }
 }

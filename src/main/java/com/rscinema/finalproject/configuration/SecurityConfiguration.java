@@ -64,9 +64,9 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth ->  auth
+                .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
-                    .requestMatchers("/user/**").hasAuthority(Role.CUSTOMER.getValue())
+                        .requestMatchers("/users/**","/api/movies/**").hasAuthority("ROLE_".concat(Role.ADMIN.getValue()))
 
                 )
                 .httpBasic(withDefaults()).
@@ -74,8 +74,8 @@ public class SecurityConfiguration {
                 {
                     oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter()));
                 })
-                .sessionManagement((session)->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling((exception)->exception
+                .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .exceptionHandling((exception) -> exception
                         .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
                         .accessDeniedHandler(new BearerTokenAccessDeniedHandler())
                 ).build();

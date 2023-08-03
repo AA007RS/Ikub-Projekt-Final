@@ -1,6 +1,6 @@
 package com.rscinema.finalproject.configuration;
 
-import com.rscinema.finalproject.domain.dto.LoginRequestDTO;
+import com.rscinema.finalproject.domain.dto.auth.LoginRequestDTO;
 import com.rscinema.finalproject.domain.entity.user.User;
 import com.rscinema.finalproject.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

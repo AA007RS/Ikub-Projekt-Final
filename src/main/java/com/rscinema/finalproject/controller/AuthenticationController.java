@@ -1,10 +1,9 @@
 package com.rscinema.finalproject.controller;
 
 import com.rscinema.finalproject.configuration.AuthenticationService;
-import com.rscinema.finalproject.domain.dto.LoginRequestDTO;
-import com.rscinema.finalproject.domain.dto.RegistrationFormDTO;
+import com.rscinema.finalproject.domain.dto.auth.LoginRequestDTO;
+import com.rscinema.finalproject.domain.dto.auth.RegistrationFormDTO;
 import com.rscinema.finalproject.domain.dto.UserDTO;
-import com.rscinema.finalproject.domain.entity.user.User;
 import com.rscinema.finalproject.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

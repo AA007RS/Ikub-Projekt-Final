@@ -1,4 +1,4 @@
-package com.rscinema.finalproject.domain.dto;
+package com.rscinema.finalproject.domain.dto.auth;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
