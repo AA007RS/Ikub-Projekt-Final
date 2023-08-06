@@ -34,8 +34,4 @@ public abstract class BaseEntity<I> {
     private I updatedBy;
     private boolean deleted;
 
-//    @PrePersist
-//    public void prePersist(){
-//        createdAt = LocalDateTime.now();
-//    }
 }

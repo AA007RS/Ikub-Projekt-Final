@@ -1,6 +1,7 @@
 package com.rscinema.finalproject.domain.mapper;
 
 import com.rscinema.finalproject.domain.dto.UserDTO;
+import com.rscinema.finalproject.domain.dto.RegistrationDetailsDTO;
 import com.rscinema.finalproject.domain.entity.user.Gender;
 import com.rscinema.finalproject.domain.entity.user.Role;
 import com.rscinema.finalproject.domain.entity.user.User;
@@ -12,11 +13,12 @@ public class UserMapper {
                 .id(user.getId())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
+                .gender(user.getGender()==null?"":user.getGender().getValue())
                 .email(user.getEmail())
                 .password(user.getPassword())
                 .age(user.getAge())
                 .role(user.getRole().getValue())
-                .phoneNumber(user.getPhoneNumber())
+                .phoneNumber(user.getPhoneNumber()==null?"": user.getPhoneNumber())
                 .build();
     }
 

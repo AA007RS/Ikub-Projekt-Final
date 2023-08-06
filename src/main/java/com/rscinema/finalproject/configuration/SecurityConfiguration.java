@@ -66,8 +66,8 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/users/**","/api/movies/**").hasAuthority("ROLE_".concat(Role.ADMIN.getValue()))
-
+                        .requestMatchers("/api/admin/**","/api/movies/**").hasAuthority("ROLE_".concat(Role.ADMIN.getValue()))
+                        .requestMatchers("/user/**").authenticated()
                 )
                 .httpBasic(withDefaults()).
                 oauth2ResourceServer((oauth2) ->
