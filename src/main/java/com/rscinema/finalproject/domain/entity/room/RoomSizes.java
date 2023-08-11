@@ -17,12 +17,12 @@ public enum RoomSizes {
     private final Integer row_num;
     private final Integer row_size;
 
-    public static RoomSizes fromValue(String roomType){
+    public static RoomSizes fromValue(String roomSize){
         return Arrays.stream(RoomSizes.values())
-                .filter(el -> el.type.equalsIgnoreCase(roomType))
+                .filter(el -> el.type.equalsIgnoreCase(roomSize))
                 .findFirst()
                 .orElseThrow(()->new ResourceNotFoundException(String
-                        .format("Room type %s is not found!",roomType)));
+                        .format("Room type %s is not found!",roomSize)));
     }
 
 }

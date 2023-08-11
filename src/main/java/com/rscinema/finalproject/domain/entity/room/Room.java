@@ -24,8 +24,9 @@ public class Room extends BaseEntity<Integer> {
     @Column(name = "room_name")
     private String name;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "room_type")
-    private String roomType;
+    private RoomSizes roomSize;
 
     @OneToMany(mappedBy = "room",
             fetch = FetchType.LAZY,

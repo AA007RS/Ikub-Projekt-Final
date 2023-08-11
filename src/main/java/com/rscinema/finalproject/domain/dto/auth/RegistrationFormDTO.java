@@ -24,7 +24,7 @@ public class RegistrationFormDTO {
     @Size(min = 3, message = "Last name should have at least 3 characters")
     private String lastName;
 
-    @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}", message = "Oops! Email already taken!")
+    @Email(regexp = "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}", message = "Email not valid!")
     @NotNull(message = "Email must be filled!")
     private String email;
 

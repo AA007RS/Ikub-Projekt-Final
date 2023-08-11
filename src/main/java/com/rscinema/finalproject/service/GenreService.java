@@ -13,6 +13,6 @@ public interface GenreService {
     GenreDTO findGenreByName(String genreName);
     List<GenreDTO> findAll();
     GenreDTO update(GenreDTO genreDTO);
-    void gentleDelete(Integer id);
-    void hardDelete(Integer id);
+    void softDelete(Integer id);
+
 }

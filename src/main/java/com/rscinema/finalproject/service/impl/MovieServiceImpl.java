@@ -79,7 +79,6 @@ public class MovieServiceImpl implements MovieService {
     public void softDelete(Integer id) {
         Movie toDelete = findById(id);
         toDelete.setDeleted(true);
-        toDelete.setUpdatedAt(LocalDateTime.now());
         movieRepository.save(toDelete);
     }
 

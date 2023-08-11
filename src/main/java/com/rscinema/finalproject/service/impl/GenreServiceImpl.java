@@ -60,16 +60,11 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    public void gentleDelete(Integer id) {
+    public void softDelete(Integer id) {
         Genre toDelete = findById(id);
         toDelete.setDeleted(true);
         toDelete.setUpdatedAt(LocalDateTime.now());
         genreRepository.save(toDelete);
     }
 
-    @Override
-    public void hardDelete(Integer id) {
-        Genre toDelete = findById(id);
-        genreRepository.delete(toDelete);
-    }
 }

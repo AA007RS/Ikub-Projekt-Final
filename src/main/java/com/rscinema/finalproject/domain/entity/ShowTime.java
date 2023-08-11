@@ -1,9 +1,14 @@
 package com.rscinema.finalproject.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.rscinema.finalproject.domain.entity.room.Room;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.sql.Date;
+import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @Builder
@@ -30,11 +35,20 @@ public class ShowTime extends BaseEntity<Integer> {
     @JoinColumn(name = "room_id", referencedColumnName = "id")
     private Room room;
 
+    @Column(name="date")
+    private LocalDate date;
+
     @Column(name = "start_time")
-    private String startTime;
+    private LocalTime startTime;
+
+    @Column(name = "end_time")
+    private LocalTime endTime;
 
     @Column(name = "price")
     private Double price;
+
+    @Column(name ="ready_for_next")
+    private LocalTime readyForNextTime;
 
 
     @OneToMany(mappedBy = "showTime", cascade = CascadeType.ALL)

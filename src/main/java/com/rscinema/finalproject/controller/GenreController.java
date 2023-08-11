@@ -43,15 +43,10 @@ public class GenreController {
         return ResponseEntity.ok(genreService.update(genreDTO));
     }
 
-    @PutMapping("/gd/{id}")
-    public ResponseEntity<String> gentleDeleteById(@PathVariable("id")Integer id){
-        genreService.gentleDelete(id);
+    @PutMapping("/sd/{id}")
+    public ResponseEntity<String> softDelete(@PathVariable("id")Integer id){
+        genreService.softDelete(id);
         return new ResponseEntity<>(String.format("Genre with id %s gently deleted!",id), HttpStatus.OK);
-    }
-    @DeleteMapping("/hd/{id}")
-    public ResponseEntity<String> hardDeleteById(@PathVariable("id")Integer id){
-        genreService.hardDelete(id);
-        return new ResponseEntity<>(String.format("Genre with id %s hardly deleted!",id), HttpStatus.OK);
     }
 
 }

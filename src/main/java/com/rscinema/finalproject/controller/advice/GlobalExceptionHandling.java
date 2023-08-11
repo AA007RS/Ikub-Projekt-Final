@@ -1,9 +1,6 @@
 package com.rscinema.finalproject.controller.advice;
 
-import com.rscinema.finalproject.domain.exception.GenericExceptionResponse;
-import com.rscinema.finalproject.domain.exception.NoContentException;
-import com.rscinema.finalproject.domain.exception.PasswordException;
-import com.rscinema.finalproject.domain.exception.ResourceNotFoundException;
+import com.rscinema.finalproject.domain.exception.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,4 +46,27 @@ public class GlobalExceptionHandling {
         return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(DateException.class)
+    public ResponseEntity<GenericExceptionResponse> handleNoContent (
+            DateException exception, HttpServletRequest request
+    ){
+        GenericExceptionResponse response = GenericExceptionResponse.builder()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .path(request.getRequestURI())
+                .message(exception.getMessage())
+                .build();
+        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(HourConfusion.class)
+    public ResponseEntity<GenericExceptionResponse> handleNoContent (
+            HourConfusion exception, HttpServletRequest request
+    ){
+        GenericExceptionResponse response = GenericExceptionResponse.builder()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .path(request.getRequestURI())
+                .message(exception.getMessage())
+                .build();
+        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+    }
 }
