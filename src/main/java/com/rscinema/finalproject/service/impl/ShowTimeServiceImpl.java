@@ -1,5 +1,6 @@
 package com.rscinema.finalproject.service.impl;
 
+import com.rscinema.finalproject.domain.dto.showtime.RegisterShowTimeDTO;
 import com.rscinema.finalproject.domain.dto.showtime.ShowTimeDTO;
 import com.rscinema.finalproject.domain.entity.Movie;
 import com.rscinema.finalproject.domain.entity.ShowTime;
@@ -30,7 +31,14 @@ public class ShowTimeServiceImpl implements ShowTimeService {
     private final RoomRepository roomRepository;
 
     @Override
-    public ShowTimeDTO create(ShowTimeDTO dto) {
+    public ShowTimeDTO create(RegisterShowTimeDTO dto) {
+        ShowTimeDTO showTimeDTO = ShowTimeDTO.builder()
+                .movie(dto.getMovie())
+                .room(dto.getRoom())
+                .date(dto.getDate())
+                .startTime(dto.getStartTime())
+                .price(dto.getPrice())
+                .build();
         //find existing movie
         Movie movie = movieRepository.findByTitleIgnoreCase(dto.getMovie())
                 .orElseThrow(() -> new ResourceNotFoundException(String.format(
@@ -44,14 +52,13 @@ public class ShowTimeServiceImpl implements ShowTimeService {
 
         ShowTime toSave;
         try {
-            toSave = ShowTimeMapper.toEntity(dto);
+            toSave = ShowTimeMapper.toEntity(showTimeDTO);
         } catch (DateTimeParseException e) {
             throw new DateException(String.format(
                     "Date %s or time %s is not correct or has wrong format!",
                     dto.getDate(), dto.getStartTime()
             ));
         }
-
         toSave.setMovie(movie);
         toSave.setRoom(room);
         //llogarit ne ore dhe minuta filmin
@@ -94,5 +101,15 @@ public class ShowTimeServiceImpl implements ShowTimeService {
         LocalDate formattedDate = LocalDate.parse(date);
 
         return showTimeRepository.findByRoomAndDate(roomToFind, formattedDate);
+    }
+
+    @Override
+    public List<ShowTimeDTO> findByDate(String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDate formattedDate = LocalDate.parse(date,formatter);
+
+        return showTimeRepository.findByDateOrderByStartTime(formattedDate).stream()
+                .map(ShowTimeMapper::toDTO)
+                .toList();
     }
 }

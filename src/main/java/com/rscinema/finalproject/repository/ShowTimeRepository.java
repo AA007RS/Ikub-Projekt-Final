@@ -11,5 +11,6 @@ import java.util.List;
 public interface ShowTimeRepository extends JpaRepository<ShowTime,Integer> {
 
     List<ShowTime> findByRoomAndDate(Room room, LocalDate date);
+    List<ShowTime> findByDateOrderByStartTime(LocalDate date);
 
 }

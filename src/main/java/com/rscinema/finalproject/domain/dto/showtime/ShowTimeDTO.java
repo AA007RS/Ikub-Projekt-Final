@@ -1,5 +1,7 @@
 package com.rscinema.finalproject.domain.dto.showtime;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Builder
