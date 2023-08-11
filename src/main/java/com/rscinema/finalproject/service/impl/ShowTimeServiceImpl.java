@@ -32,13 +32,6 @@ public class ShowTimeServiceImpl implements ShowTimeService {
 
     @Override
     public ShowTimeDTO create(RegisterShowTimeDTO dto) {
-        ShowTimeDTO showTimeDTO = ShowTimeDTO.builder()
-                .movie(dto.getMovie())
-                .room(dto.getRoom())
-                .date(dto.getDate())
-                .startTime(dto.getStartTime())
-                .price(dto.getPrice())
-                .build();
         //find existing movie
         Movie movie = movieRepository.findByTitleIgnoreCase(dto.getMovie())
                 .orElseThrow(() -> new ResourceNotFoundException(String.format(
@@ -49,6 +42,14 @@ public class ShowTimeServiceImpl implements ShowTimeService {
                 .orElseThrow(() -> new ResourceNotFoundException(String.format(
                         "Room with name %s does not exist!", dto.getRoom()
                 )));
+        // create converter dto
+        ShowTimeDTO showTimeDTO = ShowTimeDTO.builder()
+                .movie(dto.getMovie())
+                .room(dto.getRoom())
+                .date(dto.getDate())
+                .startTime(dto.getStartTime())
+                .price(dto.getPrice())
+                .build();
 
         ShowTime toSave;
         try {
@@ -61,30 +62,36 @@ public class ShowTimeServiceImpl implements ShowTimeService {
         }
         toSave.setMovie(movie);
         toSave.setRoom(room);
+
         //llogarit ne ore dhe minuta filmin
         int hours = toSave.getMovie().getLength() / 60;
         int minutes = toSave.getMovie().getLength() % 60;
 
-        String length = "0" + hours + ":" + ((minutes / 10 == 0) ? "0" + minutes % 10 : minutes);
+        String length = "0" + hours + ":" + ((minutes / 10 == 0) ? "0" + minutes % 10 : minutes)+":00";
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
         LocalTime formattedLength = LocalTime.parse(length, formatter);
+
         //llogarit endTime
         LocalTime endTime = toSave.getStartTime().plusHours(formattedLength.getHour())
                 .plusMinutes(formattedLength.getMinute());
         toSave.setEndTime(endTime);
+
         //llogarit oren kur salla tjeter eshte gati
         toSave.setReadyForNextTime(endTime.plusHours(1));
 
-        List<ShowTime> sameRoomAndDateShowtimes = findByRoomAndDate(toSave.getRoom().getName(), toSave.getDate().toString());
+        List<ShowTime> sameRoomAndDateShowTimes = findByRoomAndDate(toSave.getRoom().getName(), toSave.getDate().toString());
 
         //kontroll per perplasje oraresh
-        for (ShowTime sh : sameRoomAndDateShowtimes) {
-            if (toSave.getReadyForNextTime().isAfter(sh.getStartTime()) ||
-                    toSave.getStartTime().isAfter(sh.getStartTime())) {
+        for (ShowTime sh : sameRoomAndDateShowTimes) {
+            if ((toSave.getReadyForNextTime().isAfter(sh.getStartTime()) && toSave.getReadyForNextTime().isBefore(sh.getReadyForNextTime()))
+                    ||
+                    toSave.getStartTime().isAfter(sh.getStartTime()) && toSave.getStartTime().isBefore(sh.getReadyForNextTime())
+                    ||
+                toSave.getStartTime().equals(sh.getStartTime()) || toSave.getReadyForNextTime().equals(sh.getReadyForNextTime())) {
 
                 throw new HourConfusion(String.format("Ka film qe nis ne oren %s dhe salla %s eshte gati per pasardhesin ne %s!"
-                        , sh.getStartTime(),sh.getRoom().getName(), sh.getReadyForNextTime()));
+                        , sh.getStartTime(), sh.getRoom().getName(), sh.getReadyForNextTime()));
             }
         }
 
@@ -97,7 +104,6 @@ public class ShowTimeServiceImpl implements ShowTimeService {
                 .orElseThrow(() -> new ResourceNotFoundException(String.format(
                         "Room with name %s does not exist!", room
                 )));
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         LocalDate formattedDate = LocalDate.parse(date);
 
         return showTimeRepository.findByRoomAndDate(roomToFind, formattedDate);
@@ -105,8 +111,7 @@ public class ShowTimeServiceImpl implements ShowTimeService {
 
     @Override
     public List<ShowTimeDTO> findByDate(String date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        LocalDate formattedDate = LocalDate.parse(date,formatter);
+        LocalDate formattedDate = LocalDate.parse(date);
 
         return showTimeRepository.findByDateOrderByStartTime(formattedDate).stream()
                 .map(ShowTimeMapper::toDTO)

@@ -29,12 +29,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO registerUser(RegistrationFormDTO dto) {
         User user = User.builder()
-                .role(Role.fromValue(dto.getRole()))
                 .firstName(dto.getFirstName())
                 .lastName(dto.getLastName())
                 .email(dto.getEmail())
                 .password(passwordEncoder.encode(dto.getPassword()))
                 .age(dto.getAge())
+                .role(Role.CUSTOMER)
                 .build();
 
         return UserMapper.toDTO(userRepository.save(user));

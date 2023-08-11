@@ -24,11 +24,8 @@ public class ShowTimeMapper {
     }
 
     public static ShowTime toEntity(ShowTimeDTO dto) throws DateTimeParseException {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        LocalDate date = LocalDate.parse(dto.getDate(),formatter);
-
-        formatter = DateTimeFormatter.ofPattern("HH:mm");
-        LocalTime time = LocalTime.parse(dto.getStartTime(),formatter);
+        LocalDate date = LocalDate.parse(dto.getDate());
+        LocalTime time = LocalTime.parse(dto.getStartTime());
 
         return ShowTime.builder()
                 .date(date)

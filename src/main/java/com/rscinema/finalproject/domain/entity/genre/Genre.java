@@ -22,7 +22,7 @@ public class Genre extends BaseEntity<Integer> {
     private Integer id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "name")
+    @Column(name = "name",unique = true)
     private MovieGenre movieGenre;
 
     @OneToMany(mappedBy = "genre",cascade = CascadeType.ALL)

@@ -10,9 +10,6 @@ import lombok.*;
 @NoArgsConstructor
 public class RegistrationFormDTO {
 
-    @NotEmpty(message = "Role must not be empty!")
-    @NotNull(message = "Role must be filled!")
-    private String role;
 
     @NotEmpty(message = "First Name should not be empty!")
     @NotNull(message = "First Name must be filled!")

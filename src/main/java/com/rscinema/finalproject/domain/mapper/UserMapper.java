@@ -29,7 +29,7 @@ public class UserMapper {
                 .email(userDTO.getEmail())
                 .password(userDTO.getPassword())
                 .gender(Gender.fromValue(userDTO.getGender()))
-                .role(Role.fromValue(userDTO.getRole()))
+                .role(Role.CUSTOMER)
                 .phoneNumber(userDTO.getPhoneNumber())
                 .build();
     }
