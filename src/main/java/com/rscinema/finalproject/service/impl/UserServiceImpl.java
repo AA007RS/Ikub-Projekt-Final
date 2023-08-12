@@ -1,5 +1,6 @@
 package com.rscinema.finalproject.service.impl;
 
+import com.rscinema.finalproject.configuration.SecurityUtils;
 import com.rscinema.finalproject.domain.dto.RegistrationDetailsDTO;
 import com.rscinema.finalproject.domain.dto.auth.RegistrationFormDTO;
 import com.rscinema.finalproject.domain.dto.UserDTO;
@@ -19,9 +20,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
+
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -109,6 +112,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO updateDetails(RegistrationDetailsDTO dto) {
+        if(!(Objects.equals(SecurityUtils.getLoggedUserId(), dto.getId()))){
+            throw new ResourceNotFoundException("You can update only your own details!");
+        }
 
         User toUpdate = findUserById(dto.getId());
 
@@ -123,6 +129,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO updatePassword(ChangePasswordFormDTO dto) {
+        if(!(Objects.equals(SecurityUtils.getLoggedUserId(), dto.getId()))){
+            throw new ResourceNotFoundException("You can update only your own details!");
+        }
         User toUpdate = findUserById(dto.getId());
         if (!passwordEncoder.matches(dto.getOldPassword(),
                 toUpdate.getPassword())){
