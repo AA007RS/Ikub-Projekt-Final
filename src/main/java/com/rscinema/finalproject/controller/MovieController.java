@@ -1,13 +1,14 @@
 package com.rscinema.finalproject.controller;
 
-import com.rscinema.finalproject.domain.dto.GenreDTO;
-import com.rscinema.finalproject.domain.dto.MovieDTO;
+import com.rscinema.finalproject.domain.dto.movie.MovieDTO;
+import com.rscinema.finalproject.domain.dto.movie.MovieSearchByAdminDTO;
 import com.rscinema.finalproject.domain.entity.Movie;
 import com.rscinema.finalproject.domain.mapper.MovieMapper;
 import com.rscinema.finalproject.service.MovieService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,24 +31,40 @@ public class MovieController {
         return ResponseEntity.ok(MovieMapper.toDTO(toReturn));
     }
 
+    @GetMapping("/existing/{id}")
+    public ResponseEntity<MovieDTO> findExistingById(@PathVariable("id")Integer id){
+        return ResponseEntity.ok(movieService.findExistingById(id));
+    }
+
     @GetMapping()
     public ResponseEntity<List<MovieDTO>> findAll() {
         return ResponseEntity.ok(movieService.findAll());
     }
 
-    @GetMapping("/byGenre")
-    public ResponseEntity<List<MovieDTO>> findAllByGenre(@RequestBody GenreDTO genreDTO){
-        return ResponseEntity.ok(movieService.findAllByGenre(genreDTO));
+    @GetMapping("/admin/search")
+    public ResponseEntity<List<MovieDTO>> searchWithAdmin(@RequestBody MovieSearchByAdminDTO dto){
+        return ResponseEntity.ok(movieService.searchMoviesAdmin(dto));
     }
-    @PutMapping()
-    public ResponseEntity<MovieDTO> update(@RequestBody MovieDTO movieDTO) {
-        return ResponseEntity.ok(movieService.update(movieDTO));
+
+    @GetMapping("/user/search")
+    public ResponseEntity<List<MovieDTO>> searchWithCustomer(@RequestParam String title){
+        return ResponseEntity.ok(movieService.searchMoviesUser(title));
+    }
+
+    @GetMapping("/byGenre/{id}")
+    public ResponseEntity<List<MovieDTO>> findAllExistingByGenreId(@PathVariable("id") Integer id){
+        return ResponseEntity.ok(movieService.findAllExistingByGenreId(id));
+    }
+    @PutMapping("/update/{id}")
+    public ResponseEntity<MovieDTO> update(@PathVariable("id") Integer id,
+                                           @RequestBody MovieDTO movieDTO) {
+        return ResponseEntity.ok(movieService.update(id,movieDTO));
     }
 
     @PutMapping("/sd/{id}")
     public ResponseEntity<String> softDelete(@PathVariable("id") Integer id) {
         movieService.softDelete(id);
-        return new ResponseEntity<>(String.format("Movie with id %s is softly deleted!", id),
+        return new ResponseEntity<>(String.format("Movie with id %s is soft deleted!", id),
                 HttpStatus.OK);
     }
 

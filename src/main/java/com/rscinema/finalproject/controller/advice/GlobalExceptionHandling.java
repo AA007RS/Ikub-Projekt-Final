@@ -69,4 +69,16 @@ public class GlobalExceptionHandling {
                 .build();
         return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(PresentException.class)
+    public ResponseEntity<GenericExceptionResponse> handleNoContent (
+            PresentException exception, HttpServletRequest request
+    ){
+        GenericExceptionResponse response = GenericExceptionResponse.builder()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .path(request.getRequestURI())
+                .message(exception.getMessage())
+                .build();
+        return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+    }
 }

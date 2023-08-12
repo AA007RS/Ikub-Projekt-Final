@@ -21,9 +21,8 @@ public class Genre extends BaseEntity<Integer> {
     @Column(name = "id")
     private Integer id;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "name",unique = true)
-    private MovieGenre movieGenre;
+    private String movieGenre;
 
     @OneToMany(mappedBy = "genre",cascade = CascadeType.ALL)
     private List<Movie> movies;

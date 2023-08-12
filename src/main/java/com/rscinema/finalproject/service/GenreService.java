@@ -10,9 +10,8 @@ public interface GenreService {
 
     GenreDTO create(GenreDTO genreDTO);
     Genre findById(Integer id);
-    GenreDTO findGenreByName(String genreName);
-    List<GenreDTO> findAll();
-    GenreDTO update(GenreDTO genreDTO);
+    List<GenreDTO> findAllPresent();
     void softDelete(Integer id);
+    void restore(Integer id);
 
 }

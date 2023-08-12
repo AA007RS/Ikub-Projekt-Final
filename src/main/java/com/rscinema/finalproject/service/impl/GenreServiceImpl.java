@@ -1,11 +1,13 @@
 package com.rscinema.finalproject.service.impl;
 
 import com.rscinema.finalproject.domain.dto.GenreDTO;
+import com.rscinema.finalproject.domain.entity.Movie;
 import com.rscinema.finalproject.domain.entity.genre.Genre;
-import com.rscinema.finalproject.domain.entity.genre.MovieGenre;
+import com.rscinema.finalproject.domain.exception.PresentException;
 import com.rscinema.finalproject.domain.exception.ResourceNotFoundException;
 import com.rscinema.finalproject.domain.mapper.GenreMapper;
 import com.rscinema.finalproject.repository.GenreRepository;
+import com.rscinema.finalproject.repository.MovieRepository;
 import com.rscinema.finalproject.service.GenreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,10 +20,11 @@ import java.util.List;
 public class GenreServiceImpl implements GenreService {
     private final GenreRepository genreRepository;
 
-
-
     @Override
     public GenreDTO create(GenreDTO genreDTO) {
+        if(genreRepository.findByMovieGenreIgnoreCase(genreDTO.getName()).isPresent()){
+            throw new PresentException(String.format("Genre %s is present!",genreDTO.getName().toUpperCase()));
+        }
         Genre genre = GenreMapper.toEntity(genreDTO);
         genreRepository.save(genre);
         return GenreMapper.toDTO(genre);
@@ -34,37 +37,32 @@ public class GenreServiceImpl implements GenreService {
                         .format("Genre with id %s not found!",id)));
     }
 
-    @Override
-    public GenreDTO findGenreByName(String genreName) {
-        MovieGenre movieGenre = MovieGenre.fromValue(genreName);
-        Genre toReturn = genreRepository.findByMovieGenre(movieGenre);
-        if(toReturn==null){
-            throw new ResourceNotFoundException(String.format("Genre %s is not created!",genreName));
-        }
-        return GenreMapper.toDTO(toReturn);
-    }
 
     @Override
-    public List<GenreDTO> findAll() {
-        return genreRepository.findAll()
+    public List<GenreDTO> findAllPresent() {
+        return genreRepository.findAllByDeletedFalse()
                 .stream()
                 .map(GenreMapper::toDTO)
                 .toList();
     }
 
-    @Override
-    public GenreDTO update(GenreDTO genreDTO) {
-        Genre toFind = findById(genreDTO.getId());
-        Genre toReturn = genreRepository.save(GenreMapper.toUpdate(toFind,genreDTO));
-        return GenreMapper.toDTO(toReturn);
-    }
-
+    // ketu filmat qe kane kete zhaner do te behen dhe ata soft deleted
     @Override
     public void softDelete(Integer id) {
         Genre toDelete = findById(id);
         toDelete.setDeleted(true);
-        toDelete.setUpdatedAt(LocalDateTime.now());
+        for (Movie movie: toDelete.getMovies()){
+            movie.setDeleted(true);
+        }
         genreRepository.save(toDelete);
+    }
+
+    //ktu filmat qe jane soft deleted do e duhen te behn restore manualisht
+    @Override
+    public void restore(Integer id) {
+        Genre toRestore = findById(id);
+        toRestore.setDeleted(false);
+        genreRepository.save(toRestore);
     }
 
 }

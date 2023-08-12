@@ -67,6 +67,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/api/admin/**",
+                                "/api/genres/**",
                                 "/api/movies/**",
                                 "/api/rooms/**",
                                 "/api/showtimes/**")

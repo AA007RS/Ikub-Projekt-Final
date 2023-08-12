@@ -1,4 +1,4 @@
-package com.rscinema.finalproject.domain.dto;
+package com.rscinema.finalproject.domain.dto.movie;
 
 import lombok.*;
 
@@ -15,5 +15,5 @@ public class MovieDTO {
     private Integer yearReleased;
     private Integer length;
     private String description;
-    private GenreDTO genreDTO;
+    private Integer genreId;
 }

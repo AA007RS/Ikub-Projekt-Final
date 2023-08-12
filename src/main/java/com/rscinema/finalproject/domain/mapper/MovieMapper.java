@@ -1,9 +1,7 @@
 package com.rscinema.finalproject.domain.mapper;
 
-import com.rscinema.finalproject.domain.dto.MovieDTO;
+import com.rscinema.finalproject.domain.dto.movie.MovieDTO;
 import com.rscinema.finalproject.domain.entity.Movie;
-
-import java.time.LocalDateTime;
 
 public class MovieMapper {
 
@@ -15,7 +13,6 @@ public class MovieMapper {
                 .yearReleased(movieDTO.getYearReleased())
                 .length(movieDTO.getLength())
                 .description(movieDTO.getDescription())
-                .genre(GenreMapper.toEntity(movieDTO.getGenreDTO()))
                 .build();
 
     }
@@ -28,7 +25,7 @@ public class MovieMapper {
                 .yearReleased(movie.getYearReleased())
                 .length(movie.getLength())
                 .description(movie.getDescription())
-                .genreDTO(GenreMapper.toDTO(movie.getGenre()))
+                .genreId(movie.getGenre().getId())
                 .build();
     }
 
@@ -38,7 +35,6 @@ public class MovieMapper {
         e.setLength(d.getLength());
         e.setDescription(d.getDescription());
         e.setYearReleased(d.getYearReleased());
-        e.setGenre(GenreMapper.toEntity(d.getGenreDTO()));
         return e;
 
     }

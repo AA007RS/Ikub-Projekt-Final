@@ -19,14 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthenticationController {
 
-    private final UserService userService;
-    private final AuthenticationService authenticationService;
 
-    @PostMapping("/register")
-    public ResponseEntity<UserDTO> registerUser(@Valid @RequestBody RegistrationFormDTO registrationFormDTO){
-        UserDTO toSave = userService.registerUser(registrationFormDTO);
-        return new ResponseEntity<>(toSave, HttpStatus.CREATED);
-    }
+    private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
     public String loginWithToken(@RequestBody LoginRequestDTO loginReq){

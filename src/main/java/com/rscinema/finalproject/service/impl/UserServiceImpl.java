@@ -9,6 +9,7 @@ import com.rscinema.finalproject.domain.entity.user.Role;
 import com.rscinema.finalproject.domain.entity.user.User;
 import com.rscinema.finalproject.domain.exception.NoContentException;
 import com.rscinema.finalproject.domain.exception.PasswordException;
+import com.rscinema.finalproject.domain.exception.PresentException;
 import com.rscinema.finalproject.domain.exception.ResourceNotFoundException;
 import com.rscinema.finalproject.domain.mapper.UserMapper;
 import com.rscinema.finalproject.repository.UserRepository;
@@ -28,6 +29,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO registerUser(RegistrationFormDTO dto) {
+        if (userRepository.findByEmail(dto.getEmail()).isPresent()){
+            throw new PresentException("Email already taken!");
+        }
         User user = User.builder()
                 .firstName(dto.getFirstName())
                 .lastName(dto.getLastName())

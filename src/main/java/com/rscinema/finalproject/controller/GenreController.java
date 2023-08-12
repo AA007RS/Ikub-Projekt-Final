@@ -18,7 +18,7 @@ public class GenreController {
     private final GenreServiceImpl genreService;
 
     @PostMapping()
-    public ResponseEntity<GenreDTO> create(@RequestBody GenreDTO genreDTO){
+    public ResponseEntity<GenreDTO> createIfNotPresent(@RequestBody GenreDTO genreDTO){
         return ResponseEntity.ok(genreService.create(genreDTO));
     }
 
@@ -28,25 +28,22 @@ public class GenreController {
         return ResponseEntity.ok(toReturn);
     }
 
-    @GetMapping("/byName/{name}")
-    public ResponseEntity<GenreDTO> findByName(@PathVariable("name")String name){
-        return ResponseEntity.ok(genreService.findGenreByName(name));
-    }
-
     @GetMapping()
-    public ResponseEntity<List<GenreDTO>> findAll(){
-        return ResponseEntity.ok(genreService.findAll());
+    public ResponseEntity<List<GenreDTO>> findAllPresent(){
+        return ResponseEntity.ok(genreService.findAllPresent());
     }
 
-    @PutMapping()
-    public ResponseEntity<GenreDTO> update(@RequestBody GenreDTO genreDTO){
-        return ResponseEntity.ok(genreService.update(genreDTO));
-    }
 
     @PutMapping("/sd/{id}")
     public ResponseEntity<String> softDelete(@PathVariable("id")Integer id){
         genreService.softDelete(id);
         return new ResponseEntity<>(String.format("Genre with id %s gently deleted!",id), HttpStatus.OK);
+    }
+
+    @PutMapping("/restore/{id}")
+    public ResponseEntity<String> restore(@PathVariable("id")Integer id){
+        genreService.restore(id);
+        return new ResponseEntity<>(String.format("Genre with id %s is restored!",id),HttpStatus.OK);
     }
 
 }
