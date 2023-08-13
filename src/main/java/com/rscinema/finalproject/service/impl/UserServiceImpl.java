@@ -22,7 +22,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -61,8 +60,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findExistingById(Integer id) {
-        return userRepository.findByIdAndDeletedFalseAndRole(id,Role.CUSTOMER)
-                .orElseThrow(()->new ResourceNotFoundException(String.format(
+        return userRepository.findByIdAndDeletedFalseAndRole(id, Role.CUSTOMER)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format(
                         "Not found!"
                 )));
     }
@@ -80,7 +79,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDTO> findAllCustomers() {
+    public List<UserDTO> findAllExistingCustomers() {
         return userRepository.findAllByRoleAndDeletedFalse(Role.fromValue("CUSTOMER")).stream()
                 .map(UserMapper::toDTO)
                 .toList();
@@ -88,18 +87,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDTO> search(UserSearchDTO dto) {
-        List<User> customers;
+        List<User> customers = userRepository.searchUsers(dto.getEmail(),
+                dto.getDeleted(),
+                (dto.getGender() == null ? null : Gender.fromValue(dto.getGender().toUpperCase())),
+                Role.CUSTOMER);
 
-        if (dto.getEmail() == null && dto.getGender() == null) {
-            return findAllCustomers();
-        } else if (dto.getEmail() == null) {
-            customers = userRepository.findAllByGenderAndRole(Gender.fromValue(dto.getGender()),Role.CUSTOMER);
-        } else if (dto.getGender() == null) {
-            customers = userRepository.findByEmailContainingIgnoreCaseAndRole(dto.getEmail(), Role.CUSTOMER);
-        } else {
-            customers = userRepository.findByEmailContainingIgnoreCaseAndGenderAndRole(
-                    dto.getEmail(), Gender.fromValue(dto.getGender()), Role.CUSTOMER);
-        }
         return customers.stream()
                 .map(UserMapper::toDTO)
                 .toList();
@@ -170,12 +162,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String deleteAccount(Integer id) {
-        if(SecurityContextHolder.getContext().getAuthentication()
+        if (SecurityContextHolder.getContext().getAuthentication()
                 .getAuthorities().stream().findFirst().get()
                 .getAuthority().equals("ROLE_".concat(Role.CUSTOMER.getValue()))
-        &&
-                !(Objects.equals(SecurityUtils.getLoggedUserId(), id))){
-                throw new ResourceNotFoundException("You have no permission!");
+                &&
+                !(Objects.equals(SecurityUtils.getLoggedUserId(), id))) {
+            throw new ResourceNotFoundException("You have no permission!");
         }
 
         User user = findExistingById(id);

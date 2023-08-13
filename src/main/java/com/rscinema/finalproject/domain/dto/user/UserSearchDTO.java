@@ -8,4 +8,5 @@ import lombok.Setter;
 public class UserSearchDTO {
     private String email;
     private String gender;
+    private Boolean deleted;
 }

@@ -2,6 +2,7 @@ package com.rscinema.finalproject.domain.entity;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
@@ -38,6 +39,7 @@ public abstract class BaseEntity<I> {
     @LastModifiedBy
     private I updatedBy;
 
-    private boolean deleted;
+    @Column(name="deleted")
+    private Boolean deleted;
 
 }

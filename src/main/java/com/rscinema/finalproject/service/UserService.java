@@ -15,7 +15,7 @@ public interface UserService {
     User findUserById(Integer id);
     User findExistingById(Integer id);
     List<UserDTO> findAllDeletedCustomers();
-    List<UserDTO> findAllCustomers();
+    List<UserDTO> findAllExistingCustomers();
     List<UserDTO> search(UserSearchDTO dto);
     UserDTO updateDetails(RegistrationDetailsDTO dto);
     String updatePassword(ChangePasswordFormDTO dto);
