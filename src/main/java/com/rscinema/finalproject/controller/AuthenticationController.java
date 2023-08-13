@@ -2,13 +2,7 @@ package com.rscinema.finalproject.controller;
 
 import com.rscinema.finalproject.configuration.AuthenticationService;
 import com.rscinema.finalproject.domain.dto.auth.LoginRequestDTO;
-import com.rscinema.finalproject.domain.dto.auth.RegistrationFormDTO;
-import com.rscinema.finalproject.domain.dto.UserDTO;
-import com.rscinema.finalproject.service.UserService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

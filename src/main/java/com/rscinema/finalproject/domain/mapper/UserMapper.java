@@ -1,7 +1,6 @@
 package com.rscinema.finalproject.domain.mapper;
 
-import com.rscinema.finalproject.domain.dto.UserDTO;
-import com.rscinema.finalproject.domain.dto.RegistrationDetailsDTO;
+import com.rscinema.finalproject.domain.dto.user.UserDTO;
 import com.rscinema.finalproject.domain.entity.user.Gender;
 import com.rscinema.finalproject.domain.entity.user.Role;
 import com.rscinema.finalproject.domain.entity.user.User;

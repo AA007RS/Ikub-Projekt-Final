@@ -1,10 +1,11 @@
 package com.rscinema.finalproject.service.impl;
 
 import com.rscinema.finalproject.configuration.SecurityUtils;
-import com.rscinema.finalproject.domain.dto.RegistrationDetailsDTO;
+import com.rscinema.finalproject.domain.dto.user.RegistrationDetailsDTO;
 import com.rscinema.finalproject.domain.dto.auth.RegistrationFormDTO;
-import com.rscinema.finalproject.domain.dto.UserDTO;
+import com.rscinema.finalproject.domain.dto.user.UserDTO;
 import com.rscinema.finalproject.domain.dto.password.ChangePasswordFormDTO;
+import com.rscinema.finalproject.domain.dto.user.UserSearchDTO;
 import com.rscinema.finalproject.domain.entity.user.Gender;
 import com.rscinema.finalproject.domain.entity.user.Role;
 import com.rscinema.finalproject.domain.entity.user.User;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,7 +34,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO registerUser(RegistrationFormDTO dto) {
-        if (userRepository.findByEmail(dto.getEmail()).isPresent()){
+        if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
             throw new PresentException("Email already taken!");
         }
         User user = User.builder()
@@ -49,11 +51,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserById(Integer id) {
-        User user = userRepository.findById(id)
+        return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format(
                         "User with id %s not found!", id
                 )));
-        return user;
     }
 
     @Override
@@ -63,25 +64,6 @@ public class UserServiceImpl implements UserService {
                         "User with email %s not found!", email
                 )));
         return UserMapper.toDTO(user);
-    }
-
-    @Override
-    public List<UserDTO> findAll() {
-        return userRepository.findAll().stream()
-                .map(UserMapper::toDTO)
-                .toList();
-    }
-
-    @Override
-    public List<UserDTO> findAllDeletedAdmins() {
-        List<User> admins = userRepository.findAllByRoleAndDeletedTrue(Role.fromValue("ADMIN"));
-        if (admins.isEmpty()) {
-            throw new NoContentException("No content for this page!");
-        }
-        return admins
-                .stream()
-                .map(UserMapper::toDTO)
-                .toList();
     }
 
     @Override
@@ -97,13 +79,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDTO> findAllAdmins() {
-        return userRepository.findAllByRoleAndDeletedFalse(Role.fromValue("ADMIN")).stream()
-                .map(UserMapper::toDTO)
-                .toList();
-    }
-
-    @Override
     public List<UserDTO> findAllCustomers() {
         return userRepository.findAllByRoleAndDeletedFalse(Role.fromValue("CUSTOMER")).stream()
                 .map(UserMapper::toDTO)
@@ -111,8 +86,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<UserDTO> search(UserSearchDTO dto) {
+        List<User> customers;
+
+        if (dto.getEmail() == null && dto.getGender() == null) {
+            return findAllCustomers();
+        } else if (dto.getEmail() == null) {
+            customers = userRepository.findAllByGenderAndRole(Gender.fromValue(dto.getGender()),Role.CUSTOMER);
+        } else if (dto.getGender() == null) {
+            customers = userRepository.findByEmailContainingIgnoreCaseAndRole(dto.getEmail(), Role.CUSTOMER);
+        } else {
+            customers = userRepository.findByEmailContainingIgnoreCaseAndGenderAndRole(
+                    dto.getEmail(), Gender.fromValue(dto.getGender()), Role.CUSTOMER);
+        }
+        return customers.stream()
+                .map(UserMapper::toDTO)
+                .toList();
+    }
+
+    @Override
     public UserDTO updateDetails(RegistrationDetailsDTO dto) {
-        if(!(Objects.equals(SecurityUtils.getLoggedUserId(), dto.getId()))){
+        if (!(Objects.equals(SecurityUtils.getLoggedUserId(), dto.getId()))) {
             throw new ResourceNotFoundException("You can update only your own details!");
         }
 
@@ -129,17 +123,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO updatePassword(ChangePasswordFormDTO dto) {
-        if(!(Objects.equals(SecurityUtils.getLoggedUserId(), dto.getId()))){
+        if (!(Objects.equals(SecurityUtils.getLoggedUserId(), dto.getId()))) {
             throw new ResourceNotFoundException("You can update only your own details!");
         }
         User toUpdate = findUserById(dto.getId());
         if (!passwordEncoder.matches(dto.getOldPassword(),
-                toUpdate.getPassword())){
+                toUpdate.getPassword())) {
             throw new PasswordException(
                     "Old password is not correct!"
             );
-        }
-        else if (passwordEncoder.matches(dto.getNewPassword(),
+        } else if (passwordEncoder.matches(dto.getNewPassword(),
                 toUpdate.getPassword())) {
             throw new PasswordException(
                     "Old password and new password must not be the same!"

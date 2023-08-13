@@ -1,4 +1,4 @@
-package com.rscinema.finalproject.domain.dto;
+package com.rscinema.finalproject.domain.dto.user;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -15,12 +15,11 @@ public class RegistrationDetailsDTO {
 
     private Integer id;
 
-    @NotEmpty(message = "First name must not be empty!")
     @NotNull(message = "First Name must be filled!")
     @Size(min = 3,message = "First name should have at least 3 characters")
     private String firstName;
 
-    @NotEmpty(message = "Last Name should not be empty!")
+
     @NotNull(message = "Last Name must be filled!")
     @Size(min = 3,message = "Last name should have at least 3 characters")
     private String lastName;
@@ -33,7 +32,6 @@ public class RegistrationDetailsDTO {
     @Min(value = 18, message = "Users must be 18 years old and above!")
     private Integer age;
 
-    @NotEmpty(message = "Phone number must not be empty!")
     @NotNull(message = "Phone number field must be filled!")
     @Size(min = 10, message = "Phone number must have at least 10 digits!")
     private String phoneNumber;
