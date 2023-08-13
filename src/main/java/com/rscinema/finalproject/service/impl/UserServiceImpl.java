@@ -17,6 +17,8 @@ import com.rscinema.finalproject.domain.mapper.UserMapper;
 import com.rscinema.finalproject.repository.UserRepository;
 import com.rscinema.finalproject.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -58,12 +60,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDTO findUserByEmail(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format(
-                        "User with email %s not found!", email
+    public User findExistingById(Integer id) {
+        return userRepository.findByIdAndDeletedFalseAndRole(id,Role.CUSTOMER)
+                .orElseThrow(()->new ResourceNotFoundException(String.format(
+                        "Not found!"
                 )));
-        return UserMapper.toDTO(user);
     }
 
     @Override
@@ -107,7 +108,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO updateDetails(RegistrationDetailsDTO dto) {
         if (!(Objects.equals(SecurityUtils.getLoggedUserId(), dto.getId()))) {
-            throw new ResourceNotFoundException("You can update only your own details!");
+            throw new ResourceNotFoundException("You have no permission!");
         }
 
         User toUpdate = findUserById(dto.getId());
@@ -121,10 +122,11 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toDTO(userRepository.save(toUpdate));
     }
 
+
     @Override
-    public UserDTO updatePassword(ChangePasswordFormDTO dto) {
+    public String updatePassword(ChangePasswordFormDTO dto) {
         if (!(Objects.equals(SecurityUtils.getLoggedUserId(), dto.getId()))) {
-            throw new ResourceNotFoundException("You can update only your own details!");
+            throw new ResourceNotFoundException("You have no permission!");
         }
         User toUpdate = findUserById(dto.getId());
         if (!passwordEncoder.matches(dto.getOldPassword(),
@@ -143,6 +145,42 @@ public class UserServiceImpl implements UserService {
             );
         }
         toUpdate.setPassword(passwordEncoder.encode(dto.getNewPassword()));
-        return UserMapper.toDTO(userRepository.save(toUpdate));
+        userRepository.save(toUpdate);
+        return "Password changed!";
+    }
+
+    //changes password for another user
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Override
+    public String setPasswordDefault(Integer id) {
+        User user = findUserById(id);
+        user.setPassword(passwordEncoder.encode("RSCinema1@#"));
+        userRepository.save(user);
+        return "Password reset!";
+    }
+
+    @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_ADMIN')")
+    @Override
+    public UserDTO seeUserDetails(Integer id) {
+        if (!(Objects.equals(SecurityUtils.getLoggedUserId(), id))) {
+            throw new ResourceNotFoundException("You have no permission!");
+        }
+        return UserMapper.toDTO(findUserById(id));
+    }
+
+    @Override
+    public String deleteAccount(Integer id) {
+        if(SecurityContextHolder.getContext().getAuthentication()
+                .getAuthorities().stream().findFirst().get()
+                .getAuthority().equals("ROLE_".concat(Role.CUSTOMER.getValue()))
+        &&
+                !(Objects.equals(SecurityUtils.getLoggedUserId(), id))){
+                throw new ResourceNotFoundException("You have no permission!");
+        }
+
+        User user = findExistingById(id);
+        user.setDeleted(true);
+        userRepository.save(user);
+        return "Account deleted successfuly!";
     }
 }

@@ -35,6 +35,8 @@ public class AuthenticationService {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginReq.getEmail(),loginReq.getPassword()));
         Optional<User> user = userRepository.findByEmail(loginReq.getEmail());
+        user.get().setDeleted(false);
+        userRepository.save(user.get());
         //the actual time in milis
         Instant current = Instant.now();
         //take the authoriy

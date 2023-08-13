@@ -18,14 +18,9 @@ public class AdminController {
 
     private final UserServiceImpl userService;
 
-    @GetMapping("/{id}")
+    @GetMapping("/customers/{id}")
     public ResponseEntity<User> findUserById(@PathVariable("id") Integer id) {
         return ResponseEntity.ok(userService.findUserById(id));
-    }
-
-    @GetMapping("/customers")
-    public ResponseEntity<List<UserDTO>> findAllCustomers(){
-        return ResponseEntity.ok(userService.findAllCustomers());
     }
 
     @GetMapping("/customers/deleted")
@@ -33,9 +28,19 @@ public class AdminController {
         return ResponseEntity.ok(userService.findAllDeletedCustomers());
     }
 
-    @GetMapping("/users/search")
+    @GetMapping("/customers/search")
     public ResponseEntity<List<UserDTO>> search( @RequestBody UserSearchDTO dto){
         return ResponseEntity.ok(userService.search(dto));
+    }
+
+    @PutMapping("/customers/reset-password/{id}")
+    public ResponseEntity<String> resetPasswordForUser(@PathVariable("id") Integer id){
+        return ResponseEntity.ok(userService.setPasswordDefault(id));
+    }
+
+    @GetMapping("/customers/delete/{id}")
+    public ResponseEntity<String> deleteAccount(@PathVariable("id")Integer id){
+        return ResponseEntity.ok(userService.deleteAccount(id));
     }
 
 }

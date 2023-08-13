@@ -14,9 +14,7 @@ public class UserMapper {
                 .lastName(user.getLastName())
                 .gender(user.getGender()==null?"":user.getGender().getValue())
                 .email(user.getEmail())
-                .password(user.getPassword())
                 .age(user.getAge())
-                .role(user.getRole().getValue())
                 .phoneNumber(user.getPhoneNumber()==null?"": user.getPhoneNumber())
                 .build();
     }
@@ -26,7 +24,6 @@ public class UserMapper {
                 .firstName(userDTO.getFirstName())
                 .lastName(userDTO.getLastName())
                 .email(userDTO.getEmail())
-                .password(userDTO.getPassword())
                 .gender(Gender.fromValue(userDTO.getGender()))
                 .role(Role.CUSTOMER)
                 .phoneNumber(userDTO.getPhoneNumber())
@@ -37,7 +34,6 @@ public class UserMapper {
         u.setFirstName(d.getFirstName());
         u.setLastName(d.getLastName());
         u.setGender(Gender.fromValue(d.getGender()));
-        u.setPassword(d.getPassword());
         u.setAge(d.getAge());
         u.setPhoneNumber(d.getPhoneNumber());
 
