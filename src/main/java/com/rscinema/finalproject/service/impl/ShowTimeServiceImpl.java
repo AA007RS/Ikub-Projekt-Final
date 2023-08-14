@@ -17,10 +17,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+
+import static com.fasterxml.jackson.databind.type.LogicalType.DateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -33,19 +36,19 @@ public class ShowTimeServiceImpl implements ShowTimeService {
     @Override
     public ShowTimeDTO create(RegisterShowTimeDTO dto) {
         //find existing movie
-        Movie movie = movieRepository.findByTitleIgnoreCase(dto.getMovie())
+        Movie movie = movieRepository.findById(dto.getMovie())
                 .orElseThrow(() -> new ResourceNotFoundException(String.format(
-                        "Movie with title %s does not exist!", dto.getMovie()
+                        "Movie with id %s does not exist!", dto.getMovie()
                 )));
         //find existing room
-        Room room = roomRepository.findByNameIgnoreCase(dto.getRoom())
+        Room room = roomRepository.findById(dto.getRoom())
                 .orElseThrow(() -> new ResourceNotFoundException(String.format(
                         "Room with name %s does not exist!", dto.getRoom()
                 )));
         // create converter dto
         ShowTimeDTO showTimeDTO = ShowTimeDTO.builder()
-                .movie(dto.getMovie())
-                .room(dto.getRoom())
+                .movie(movie.getTitle())
+                .room(room.getName())
                 .date(dto.getDate())
                 .startTime(dto.getStartTime())
                 .price(dto.getPrice())
@@ -66,9 +69,7 @@ public class ShowTimeServiceImpl implements ShowTimeService {
         //llogarit ne ore dhe minuta filmin
         int hours = toSave.getMovie().getLength() / 60;
         int minutes = toSave.getMovie().getLength() % 60;
-
-        String length = "0" + hours + ":" + ((minutes / 10 == 0) ? "0" + minutes % 10 : minutes)+":00";
-
+        String length = "0" + hours + ":" + ((minutes / 10 == 0) ? "0" + minutes % 10 : minutes) + ":00";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
         LocalTime formattedLength = LocalTime.parse(length, formatter);
 
@@ -81,20 +82,27 @@ public class ShowTimeServiceImpl implements ShowTimeService {
         toSave.setReadyForNextTime(endTime.plusHours(1));
 
         List<ShowTime> sameRoomAndDateShowTimes = findByRoomAndDate(toSave.getRoom().getName(), toSave.getDate().toString());
-
-        //kontroll per perplasje oraresh
+        System.out.println(toSave.getEndTime());
+        //kontrolli i ores
         for (ShowTime sh : sameRoomAndDateShowTimes) {
-            if ((toSave.getReadyForNextTime().isAfter(sh.getStartTime()) && toSave.getReadyForNextTime().isBefore(sh.getReadyForNextTime()))
+            //nese filmi eshte jashte orarit
+            if (toSave.getStartTime().isBefore(LocalTime.parse("10:00"))
+                    ||
+                    (!toSave.getEndTime().isBefore(LocalTime.parse("01:00"))
+                            &&
+                            toSave.getEndTime().isBefore(LocalTime.parse("04:00")))){
+                throw new HourConfusion("Kujdes orarin! Kinemaja hapet ne oren 10:00 dhe mbyllet ne 01:00");
+            //nese ska perplasje oraresh
+            } else if ((toSave.getReadyForNextTime().isAfter(sh.getStartTime()) && toSave.getReadyForNextTime().isBefore(sh.getReadyForNextTime()))
                     ||
                     toSave.getStartTime().isAfter(sh.getStartTime()) && toSave.getStartTime().isBefore(sh.getReadyForNextTime())
                     ||
-                toSave.getStartTime().equals(sh.getStartTime()) || toSave.getReadyForNextTime().equals(sh.getReadyForNextTime())) {
+                    toSave.getStartTime().equals(sh.getStartTime()) || toSave.getReadyForNextTime().equals(sh.getReadyForNextTime())) {
 
-                throw new HourConfusion(String.format("Ka film qe nis ne oren %s dhe salla %s eshte gati per pasardhesin ne %s!"
-                        , sh.getStartTime(), sh.getRoom().getName(), sh.getReadyForNextTime()));
+                throw new HourConfusion(String.format("Ka film qe nis ne oren %s dhe perfundon ne %s ne sallen %s!"
+                        , sh.getStartTime(), sh.getEndTime(), sh.getRoom().getName()));
             }
         }
-
         return ShowTimeMapper.toDTO(showTimeRepository.save(toSave));
     }
 

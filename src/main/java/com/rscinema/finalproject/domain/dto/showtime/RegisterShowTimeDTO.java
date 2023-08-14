@@ -12,11 +12,9 @@ import lombok.*;
 public class RegisterShowTimeDTO {
     private Integer id;
     @NotNull(message = "Movie must not be null!")
-    @NotBlank(message = "Movie name must not be blank!")
-    private String movie;
+    private Integer movie;
     @NotNull(message = "Room must not be null!")
-    @NotBlank(message = "Room name must not be blank!")
-    private String room;
+    private Integer room;
     @NotNull(message = "Date must not be null!")
     @NotBlank(message = "Date must not be blank!")
     private String date;
