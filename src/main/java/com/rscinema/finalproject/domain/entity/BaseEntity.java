@@ -39,7 +39,6 @@ public abstract class BaseEntity<I> {
     @LastModifiedBy
     private I updatedBy;
 
-    @Column(name="deleted")
-    private Boolean deleted;
+    private boolean deleted;
 
 }

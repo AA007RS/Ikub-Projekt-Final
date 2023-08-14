@@ -1,6 +1,6 @@
 package com.rscinema.finalproject.domain.mapper;
 
-import com.rscinema.finalproject.domain.dto.RoomDTO;
+import com.rscinema.finalproject.domain.dto.room.RoomDTO;
 import com.rscinema.finalproject.domain.entity.room.Room;
 import com.rscinema.finalproject.domain.entity.room.RoomSizes;
 

@@ -1,4 +1,4 @@
-package com.rscinema.finalproject.domain.dto;
+package com.rscinema.finalproject.domain.dto.room;
 
 import lombok.*;
 
