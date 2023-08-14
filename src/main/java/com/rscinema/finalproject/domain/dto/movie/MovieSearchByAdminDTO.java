@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class MovieSearchByAdminDTO {
-    private String name;
+    private String title;
     private Boolean deleted;
 }

@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User,Integer>, JpaSpecificationExecutor<User> {
 
     @Query("SELECT u from User u WHERE " +
-            "(u.email LIKE concat(:email,'%') OR :email is null) AND " +
+            "(u.email ILIKE concat(:email,'%') OR :email is null) AND " +
             "(u.deleted = :deleted OR :deleted is null) AND " +
             "(u.gender = :gender OR :gender is null) AND " +
             "(u.role = :role or :role is null) ORDER BY u.id asc")

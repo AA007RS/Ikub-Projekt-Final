@@ -1,9 +1,7 @@
 package com.rscinema.finalproject.domain.mapper;
 
 import com.rscinema.finalproject.domain.dto.GenreDTO;
-import com.rscinema.finalproject.domain.entity.genre.Genre;
-
-import java.time.LocalDateTime;
+import com.rscinema.finalproject.domain.entity.Genre;
 
 public class GenreMapper {
 

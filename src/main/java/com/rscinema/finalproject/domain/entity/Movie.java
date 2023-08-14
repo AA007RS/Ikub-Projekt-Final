@@ -1,6 +1,5 @@
 package com.rscinema.finalproject.domain.entity;
 
-import com.rscinema.finalproject.domain.entity.genre.Genre;
 import jakarta.persistence.*;
 import lombok.*;
 

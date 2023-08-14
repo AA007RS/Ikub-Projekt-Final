@@ -2,17 +2,15 @@ package com.rscinema.finalproject.service.impl;
 
 import com.rscinema.finalproject.domain.dto.GenreDTO;
 import com.rscinema.finalproject.domain.entity.Movie;
-import com.rscinema.finalproject.domain.entity.genre.Genre;
+import com.rscinema.finalproject.domain.entity.Genre;
 import com.rscinema.finalproject.domain.exception.PresentException;
 import com.rscinema.finalproject.domain.exception.ResourceNotFoundException;
 import com.rscinema.finalproject.domain.mapper.GenreMapper;
 import com.rscinema.finalproject.repository.GenreRepository;
-import com.rscinema.finalproject.repository.MovieRepository;
 import com.rscinema.finalproject.service.GenreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor

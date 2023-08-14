@@ -3,14 +3,13 @@ package com.rscinema.finalproject.service.impl;
 import com.rscinema.finalproject.domain.dto.movie.MovieDTO;
 import com.rscinema.finalproject.domain.dto.movie.MovieSearchByAdminDTO;
 import com.rscinema.finalproject.domain.entity.Movie;
-import com.rscinema.finalproject.domain.entity.genre.Genre;
+import com.rscinema.finalproject.domain.entity.Genre;
 import com.rscinema.finalproject.domain.exception.ResourceNotFoundException;
 import com.rscinema.finalproject.domain.mapper.MovieMapper;
 import com.rscinema.finalproject.repository.GenreRepository;
 import com.rscinema.finalproject.repository.MovieRepository;
 import com.rscinema.finalproject.service.MovieService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -50,16 +49,17 @@ public class MovieServiceImpl implements MovieService {
     //admini kerkon filma sipas 2 fields: name dhe deleted
     @Override
     public List<MovieDTO> searchMoviesAdmin(MovieSearchByAdminDTO dto) {
-        List<Movie> movies;
-        if(dto.getName()==null && dto.getDeleted()==null){
-            return findAll();
-        } else if (dto.getName()==null ) {
-            movies = movieRepository.findAllByDeleted(dto.getDeleted());
-        }else if (dto.getDeleted()==null) {
-            movies = movieRepository.findAllByTitleContainingIgnoreCase(dto.getName());
-        }else{
-            movies = movieRepository.findAllByTitleContainingIgnoreCaseAndDeleted(dto.getName(),dto.getDeleted());
-        }
+
+        List<Movie> movies = movieRepository.searchMovies(dto.getTitle(),dto.getDeleted());
+//        if(dto.getName()==null && dto.getDeleted()==null){
+//            return findAll();
+//        } else if (dto.getName()==null ) {
+//            movies = movieRepository.findAllByDeleted(dto.getDeleted());
+//        }else if (dto.getDeleted()==null) {
+//            movies = movieRepository.findAllByTitleContainingIgnoreCase(dto.getName());
+//        }else{
+//            movies = movieRepository.findAllByTitleContainingIgnoreCaseAndDeleted(dto.getName(),dto.getDeleted());
+//        }
         return movies.stream()
                 .map(MovieMapper::toDTO)
                 .toList();
@@ -112,7 +112,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public List<MovieDTO> searchMoviesUser(String name) {
-        return movieRepository.findAllByTitleContainingIgnoreCaseAndDeleted(name,false)
+        return movieRepository.findAllByTitleContainingIgnoreCaseAndDeletedOrderByYearReleasedDesc(name,false)
                 .stream()
                 .map(MovieMapper::toDTO)
                 .toList();

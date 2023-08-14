@@ -1,4 +1,4 @@
-package com.rscinema.finalproject.domain.entity.genre;
+package com.rscinema.finalproject.domain.entity;
 
 import com.rscinema.finalproject.domain.entity.BaseEntity;
 import com.rscinema.finalproject.domain.entity.Movie;

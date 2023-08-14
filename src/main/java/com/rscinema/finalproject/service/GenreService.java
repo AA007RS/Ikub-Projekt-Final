@@ -1,7 +1,7 @@
 package com.rscinema.finalproject.service;
 
 import com.rscinema.finalproject.domain.dto.GenreDTO;
-import com.rscinema.finalproject.domain.entity.genre.Genre;
+import com.rscinema.finalproject.domain.entity.Genre;
 
 import java.util.List;
 
