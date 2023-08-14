@@ -108,6 +108,8 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public void restore(Integer id) {
         Movie movie = findById(id);
+        movie.setDeleted(false);
+        movieRepository.save(movie);
     }
 
     @Override

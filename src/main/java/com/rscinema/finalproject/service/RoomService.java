@@ -9,7 +9,6 @@ import java.util.List;
 public interface RoomService {
     RoomDTO create(RoomDTO dto);
     Room findById(Integer id);
-    List<RoomDTO> findNonDeletedRooms();
     List<RoomDTO> searchRoom(RoomSearchDTO dto);
     RoomDTO update(RoomDTO dto);
     void softDelete(Integer id);

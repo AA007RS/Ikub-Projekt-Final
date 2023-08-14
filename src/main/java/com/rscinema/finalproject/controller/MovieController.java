@@ -68,6 +68,12 @@ public class MovieController {
                 HttpStatus.OK);
     }
 
+    @PutMapping("/restore/{id}")
+    public ResponseEntity<String> restore(@PathVariable("id")Integer id){
+        movieService.restore(id);
+        return new ResponseEntity<>(String.format("Movie with id %s is restored!",id),
+                HttpStatus.OK);
+    }
 
     @DeleteMapping("/hd/{id}")
     public ResponseEntity<String> hardDelete(@PathVariable("id") Integer id) {

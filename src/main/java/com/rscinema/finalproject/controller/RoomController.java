@@ -30,11 +30,6 @@ public class RoomController {
         return ResponseEntity.ok(RoomMapper.toDTO(room));
     }
 
-    @GetMapping()
-    public ResponseEntity<List<RoomDTO>> findAllNonDeletedRooms(){
-        return ResponseEntity.ok(roomService.findNonDeletedRooms());
-    }
-
     @GetMapping("/admin/search")
     public ResponseEntity<List<RoomDTO>> search(@RequestBody RoomSearchDTO dto){
         return ResponseEntity.ok(roomService.searchRoom(dto));

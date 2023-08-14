@@ -33,13 +33,6 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public List<RoomDTO> findNonDeletedRooms() {
-        return roomRepository.findAllByDeletedFalse().stream()
-                .map(RoomMapper::toDTO)
-                .toList();
-    }
-
-    @Override
     public List<RoomDTO> searchRoom(RoomSearchDTO dto) {
         return roomRepository.searchRooms(dto.getRoomName(),dto.getDeleted())
                 .stream()
