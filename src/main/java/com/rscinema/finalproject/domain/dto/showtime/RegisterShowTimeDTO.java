@@ -4,6 +4,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 @Builder
 @Getter
 @Setter
@@ -16,11 +19,9 @@ public class RegisterShowTimeDTO {
     @NotNull(message = "Room must not be null!")
     private Integer room;
     @NotNull(message = "Date must not be null!")
-    @NotBlank(message = "Date must not be blank!")
-    private String date;
+    private LocalDate date;
     @NotNull(message = "Start Time must not be null!")
-    @NotBlank(message = "Start Time must not be blank!")
-    private String startTime;
+    private LocalTime startTime;
     @NotNull(message = "Price must not be null!")
     private Double price;
 }

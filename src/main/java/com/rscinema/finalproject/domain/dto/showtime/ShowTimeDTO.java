@@ -4,6 +4,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 @Builder
 @Getter
 @Setter
@@ -13,9 +17,9 @@ public class ShowTimeDTO {
     private Integer id;
     private String movie;
     private String room;
-    private String date;
-    private String startTime;
-    private String endTime;
-    private String readyForNextTime;
+    private LocalDate date;
+    private LocalTime startTime;
+    private LocalTime endTime;
+    private LocalTime readyForNextTime;
     private Double price;
 }

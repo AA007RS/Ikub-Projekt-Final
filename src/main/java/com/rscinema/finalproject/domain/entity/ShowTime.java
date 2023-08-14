@@ -8,6 +8,7 @@ import lombok.*;
 import java.sql.Date;
 import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -38,18 +39,17 @@ public class ShowTime extends BaseEntity<Integer> {
     @Column(name="date")
     private LocalDate date;
 
-    @Column(name = "start_time")
+    @Column(name = "startTime")
     private LocalTime startTime;
 
     @Column(name = "end_time")
-    private LocalTime endTime;
+    private LocalDateTime endTime;
+
+    @Column(name ="ready_for_next")
+    private LocalDateTime readyForNextTime;
 
     @Column(name = "price")
     private Double price;
-
-    @Column(name ="ready_for_next")
-    private LocalTime readyForNextTime;
-
 
     @OneToMany(mappedBy = "showTime", cascade = CascadeType.ALL)
     private List<Ticket> tickets;

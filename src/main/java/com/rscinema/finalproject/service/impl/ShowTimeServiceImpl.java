@@ -23,8 +23,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
-import static com.fasterxml.jackson.databind.type.LogicalType.DateTime;
-
 @Service
 @RequiredArgsConstructor
 public class ShowTimeServiceImpl implements ShowTimeService {
@@ -59,8 +57,8 @@ public class ShowTimeServiceImpl implements ShowTimeService {
             toSave = ShowTimeMapper.toEntity(showTimeDTO);
         } catch (DateTimeParseException e) {
             throw new DateException(String.format(
-                    "Date %s or time %s is not correct or has wrong format!",
-                    dto.getDate(), dto.getStartTime()
+                    "Date or time %s is not correct or has wrong format!",
+                    dto.getStartTime()
             ));
         }
         toSave.setMovie(movie);
@@ -71,50 +69,59 @@ public class ShowTimeServiceImpl implements ShowTimeService {
         int minutes = toSave.getMovie().getLength() % 60;
         String length = "0" + hours + ":" + ((minutes / 10 == 0) ? "0" + minutes % 10 : minutes) + ":00";
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-        LocalTime formattedLength = LocalTime.parse(length, formatter);
+        LocalTime formattedMovieLength = LocalTime.parse(length, formatter);
 
         //llogarit endTime
-        LocalTime endTime = toSave.getStartTime().plusHours(formattedLength.getHour())
-                .plusMinutes(formattedLength.getMinute());
-        toSave.setEndTime(endTime);
+        LocalDateTime endTimeAndDate = LocalDateTime.of(toSave.getDate(),toSave.getStartTime())
+                .plusHours(formattedMovieLength.getHour())
+                .plusMinutes(formattedMovieLength.getMinute());
+        toSave.setEndTime(endTimeAndDate);
 
         //llogarit oren kur salla tjeter eshte gati
-        toSave.setReadyForNextTime(endTime.plusHours(1));
+        toSave.setReadyForNextTime(endTimeAndDate.plusHours(1));
 
-        List<ShowTime> sameRoomAndDateShowTimes = findByRoomAndDate(toSave.getRoom().getName(), toSave.getDate().toString());
-        System.out.println(toSave.getEndTime());
+        List<ShowTime> sameRoomAndDateShowTimes = findByRoomAndDate(toSave.getRoom().getId(),toSave.getDate());
+
+        LocalDateTime startDateAndTimeOfEntity = LocalDateTime.of(toSave.getDate(),toSave.getStartTime());
         //kontrolli i ores
         for (ShowTime sh : sameRoomAndDateShowTimes) {
-            //nese filmi eshte jashte orarit
-            if (toSave.getStartTime().isBefore(LocalTime.parse("10:00"))
-                    ||
-                    (!toSave.getEndTime().isBefore(LocalTime.parse("01:00"))
-                            &&
-                            toSave.getEndTime().isBefore(LocalTime.parse("04:00")))){
-                throw new HourConfusion("Kujdes orarin! Kinemaja hapet ne oren 10:00 dhe mbyllet ne 01:00");
-            //nese ska perplasje oraresh
-            } else if ((toSave.getReadyForNextTime().isAfter(sh.getStartTime()) && toSave.getReadyForNextTime().isBefore(sh.getReadyForNextTime()))
-                    ||
-                    toSave.getStartTime().isAfter(sh.getStartTime()) && toSave.getStartTime().isBefore(sh.getReadyForNextTime())
-                    ||
-                    toSave.getStartTime().equals(sh.getStartTime()) || toSave.getReadyForNextTime().equals(sh.getReadyForNextTime())) {
+            LocalDateTime startDateAndTimeOfTable = LocalDateTime.of(sh.getDate(),sh.getStartTime());
+            LocalDate theNextDay = sh.getDate().plusDays(1);
 
-                throw new HourConfusion(String.format("Ka film qe nis ne oren %s dhe perfundon ne %s ne sallen %s!"
-                        , sh.getStartTime(), sh.getEndTime(), sh.getRoom().getName()));
+            //nese filmi eshte jashte orarit
+             if (toSave.getEndTime().isAfter(LocalDateTime.of(theNextDay,LocalTime.parse("01:00:00")))) {
+                 String[] dateAndTime = toSave.getEndTime().toString().split("T");
+                throw new HourConfusion(String.format("Showtime that you are creating has a movie which ends at %s, whereas the cinema closes at %s AM!"
+                        ,dateAndTime[1] , "01:00"));
+
+            }else if (toSave.getStartTime().isBefore(LocalTime.parse("10:00"))) {
+                 throw new HourConfusion("That is not a cinema hour! Cinema opens at 10:00 AM");
+                 //nese ska perplasje oraresh
+             }
+            else if ((startDateAndTimeOfEntity.isBefore(startDateAndTimeOfTable)
+                    && toSave.getReadyForNextTime().isAfter(startDateAndTimeOfTable) && toSave.getReadyForNextTime().isBefore(sh.getReadyForNextTime()))
+                        ||
+                    (startDateAndTimeOfEntity.isAfter(startDateAndTimeOfTable) && startDateAndTimeOfEntity.isBefore(sh.getReadyForNextTime())
+                            && toSave.getReadyForNextTime().isAfter(startDateAndTimeOfTable) )
+                    ||
+                    (startDateAndTimeOfEntity.equals(startDateAndTimeOfTable)||toSave.getReadyForNextTime().equals(sh.getReadyForNextTime()))
+                    ){
+                 String[] dateAndTime = sh.getEndTime().toString().split("T");
+                throw new HourConfusion(String.format("There is a movie that starts at %s and ends at %s in room : %s!"
+                        , sh.getStartTime(), dateAndTime[1], sh.getRoom().getName()));
             }
         }
         return ShowTimeMapper.toDTO(showTimeRepository.save(toSave));
     }
 
     @Override
-    public List<ShowTime> findByRoomAndDate(String room, String date) {
-        Room roomToFind = roomRepository.findByNameIgnoreCase(room)
+    public List<ShowTime> findByRoomAndDate(Integer room, LocalDate date) {
+        Room roomToFind = roomRepository.findById(room)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format(
                         "Room with name %s does not exist!", room
                 )));
-        LocalDate formattedDate = LocalDate.parse(date);
 
-        return showTimeRepository.findByRoomAndDate(roomToFind, formattedDate);
+        return showTimeRepository.findByRoomAndDateOrderByDateAscStartTimeAsc(roomToFind, date);
     }
 
     @Override
