@@ -6,6 +6,7 @@ import com.rscinema.finalproject.domain.dto.showtime.ShowTimeSearchDTO;
 import com.rscinema.finalproject.domain.dto.showtime.UpdateShowTimeDTO;
 import com.rscinema.finalproject.domain.entity.Movie;
 import com.rscinema.finalproject.domain.entity.ShowTime;
+import com.rscinema.finalproject.domain.entity.Ticket;
 import com.rscinema.finalproject.domain.entity.room.Room;
 import com.rscinema.finalproject.domain.exception.DateException;
 import com.rscinema.finalproject.domain.exception.HourConfusion;
@@ -81,7 +82,7 @@ public class ShowTimeServiceImpl implements ShowTimeService {
                         "Room with name %s does not exist!", room
                 )));
 
-        return showTimeRepository.findByRoomAndStartDateOrderByStartDateAscStartTimeAsc(roomToFind, date);
+        return showTimeRepository.findByRoomAndStartDateAndDeletedIsFalseOrderByStartDateAscStartTimeAsc(roomToFind, date);
     }
 
     @Override
@@ -95,19 +96,19 @@ public class ShowTimeServiceImpl implements ShowTimeService {
     public List<ShowTimeDTO> search(ShowTimeSearchDTO dto) {
         System.out.println(dto.getMovieId());
 
-        return showTimeRepository.searchShowTimes(dto.getMovieId(),dto.getRoomId(), dto.getStartDate()
-                        , dto.getStartTime(),dto.getEndDate(),dto.getEndTime() , dto.getDeleted()).stream()
+        return showTimeRepository.searchShowTimes(dto.getMovieId(), dto.getRoomId(), dto.getStartDate()
+                        , dto.getStartTime(), dto.getEndDate(), dto.getEndTime(), dto.getDeleted()).stream()
                 .map(ShowTimeMapper::toDTO)
                 .toList();
     }
 
     @Override
     public ShowTimeDTO update(UpdateShowTimeDTO dto) {
-        ShowTime showTime = ShowTimeMapper.update(findById(dto.getCurrentId()),dto);
+        ShowTime showTime = ShowTimeMapper.update(findById(dto.getCurrentId()), dto);
 
         Movie movie = movieRepository.findById(dto.getMovieId())
-                .orElseThrow(()->new ResourceNotFoundException(String.format(
-                        "No movie found with id %s",dto.getMovieId()
+                .orElseThrow(() -> new ResourceNotFoundException(String.format(
+                        "No movie found with id %s", dto.getMovieId()
                 )));
         showTime.setMovie(movie);
         calculateEndDateAndTime(showTime);
@@ -116,18 +117,39 @@ public class ShowTimeServiceImpl implements ShowTimeService {
         return ShowTimeMapper.toDTO(showTimeRepository.save(showTime));
     }
 
+    @Override
+    public String delete(Integer id) {
+        ShowTime showTime = findById(id);
+        showTime.setDeleted(true);
+        for (Ticket t : showTime.getTickets()) {
+            t.setDeleted(true);
+        }
+        showTimeRepository.save(showTime);
+        return String.format("ShowTime with id %s deleted!", id);
+    }
+
+    @Override
+    public void restore(Integer id) {
+        ShowTime showTime = findById(id);
+        checkHourAvailability(showTime);
+        showTime.setDeleted(false);
+        for(Ticket t : showTime.getTickets()){
+            t.setDeleted(false);
+        }
+        showTimeRepository.save(showTime);
+    }
+
     //utility to check available hour
-    public void checkHourAvailability(ShowTime toSave) {
+    private void checkHourAvailability(ShowTime toSave) {
         List<ShowTime> sameRoomAndDateShowTimes = findByRoomAndDate(toSave.getRoom().getId(), toSave.getStartDate());
         LocalDateTime startDateAndTimeOfEntity = LocalDateTime.of(toSave.getStartDate(), toSave.getStartTime());
         LocalDateTime endDateAndTimeOfEntity = LocalDateTime.of(toSave.getEndDate(), toSave.getEndTime());
         //kontrolli i ores
         //nese filmi eshte jashte orarit
-        if (!startDateAndTimeOfEntity.isAfter(LocalDateTime.now())){
+        if (!startDateAndTimeOfEntity.isAfter(LocalDateTime.now())) {
             throw new HourConfusion("Confusion!");
-        }
-        else if (LocalTime.from(endDateAndTimeOfEntity).isAfter((LocalTime.parse("01:00:00")))&&
-        LocalTime.from(endDateAndTimeOfEntity).isBefore(LocalTime.parse("10:00:00"))) {
+        } else if (LocalTime.from(endDateAndTimeOfEntity).isAfter((LocalTime.parse("01:00:00"))) &&
+                LocalTime.from(endDateAndTimeOfEntity).isBefore(LocalTime.parse("10:00:00"))) {
             String[] dateAndTime = endDateAndTimeOfEntity.toString().split("T");
             throw new HourConfusion(String.format("Showtime that you are creating has a movie which ends at %s, whereas the cinema closes at %s AM!"
                     , dateAndTime[1], "01:00"));
@@ -135,9 +157,9 @@ public class ShowTimeServiceImpl implements ShowTimeService {
         } else if (toSave.getStartTime().isBefore(LocalTime.parse("10:00"))) {
             throw new HourConfusion("That is not a cinema hour! Cinema opens at 10:00 AM");
             //nese ska perplasje oraresh
-        }else{
+        } else {
             for (ShowTime sh : sameRoomAndDateShowTimes) {
-                if (toSave.getId()==sh.getId()){
+                if (toSave.getId() == sh.getId()) {
                     //per update
                     continue;
                 }
@@ -154,7 +176,7 @@ public class ShowTimeServiceImpl implements ShowTimeService {
 
                     throw new HourConfusion(String.format("There is a movie that starts at %s and ends at %s in room : %s " +
                                     "for the date %s!"
-                            , sh.getStartTime(), sh.getEndTime(), sh.getRoom().getName(),sh.getEndDate()));
+                            , sh.getStartTime(), sh.getEndTime(), sh.getRoom().getName(), sh.getEndDate()));
                 }
 
             }
@@ -163,7 +185,7 @@ public class ShowTimeServiceImpl implements ShowTimeService {
 
     }
 
-    public void calculateEndDateAndTime(ShowTime toSave){
+    private void calculateEndDateAndTime(ShowTime toSave) {
         //llogarit ne ore dhe minuta filmin
         int hours = toSave.getMovie().getLength() / 60;
         int minutes = toSave.getMovie().getLength() % 60;

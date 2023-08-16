@@ -1,9 +1,6 @@
 package com.rscinema.finalproject.service;
 
-import com.rscinema.finalproject.domain.dto.showtime.RegisterShowTimeDTO;
-import com.rscinema.finalproject.domain.dto.showtime.ShowTimeDTO;
-import com.rscinema.finalproject.domain.dto.showtime.ShowTimeSearchDTO;
-import com.rscinema.finalproject.domain.dto.showtime.UpdateShowTimeDTO;
+import com.rscinema.finalproject.domain.dto.showtime.*;
 import com.rscinema.finalproject.domain.entity.ShowTime;
 
 import java.time.LocalDate;
@@ -17,4 +14,10 @@ public interface ShowTimeService {
     ShowTime findById(Integer id);
     List<ShowTimeDTO> search(ShowTimeSearchDTO dto);
     ShowTimeDTO update(UpdateShowTimeDTO dto);
+    String delete(Integer id);
+    void restore(Integer id);
+
+
+    //find by id customer view
+    //ShowTimeCustomerDTO findByIdCustomer(Integer id);
 }
