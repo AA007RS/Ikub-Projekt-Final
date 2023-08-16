@@ -2,6 +2,7 @@ package com.rscinema.finalproject.service.impl;
 
 import com.rscinema.finalproject.domain.dto.showtime.RegisterShowTimeDTO;
 import com.rscinema.finalproject.domain.dto.showtime.ShowTimeDTO;
+import com.rscinema.finalproject.domain.dto.showtime.ShowTimeSearchDTO;
 import com.rscinema.finalproject.domain.entity.Movie;
 import com.rscinema.finalproject.domain.entity.ShowTime;
 import com.rscinema.finalproject.domain.entity.room.Room;
@@ -47,7 +48,7 @@ public class ShowTimeServiceImpl implements ShowTimeService {
         ShowTimeDTO showTimeDTO = ShowTimeDTO.builder()
                 .movie(movie.getTitle())
                 .room(room.getName())
-                .date(dto.getDate())
+                .startDate(dto.getDate())
                 .startTime(dto.getStartTime())
                 .price(dto.getPrice())
                 .build();
@@ -64,56 +65,14 @@ public class ShowTimeServiceImpl implements ShowTimeService {
         toSave.setMovie(movie);
         toSave.setRoom(room);
 
-        //llogarit ne ore dhe minuta filmin
-        int hours = toSave.getMovie().getLength() / 60;
-        int minutes = toSave.getMovie().getLength() % 60;
-        String length = "0" + hours + ":" + ((minutes / 10 == 0) ? "0" + minutes % 10 : minutes) + ":00";
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-        LocalTime formattedMovieLength = LocalTime.parse(length, formatter);
+        calculateEndDateAndTime(toSave);
 
-        //llogarit endTime
-        LocalDateTime endTimeAndDate = LocalDateTime.of(toSave.getDate(),toSave.getStartTime())
-                .plusHours(formattedMovieLength.getHour())
-                .plusMinutes(formattedMovieLength.getMinute());
-        toSave.setEndTime(endTimeAndDate);
+        checkHourAvailability(toSave);
 
-        //llogarit oren kur salla tjeter eshte gati
-        toSave.setReadyForNextTime(endTimeAndDate.plusHours(1));
-
-        List<ShowTime> sameRoomAndDateShowTimes = findByRoomAndDate(toSave.getRoom().getId(),toSave.getDate());
-
-        LocalDateTime startDateAndTimeOfEntity = LocalDateTime.of(toSave.getDate(),toSave.getStartTime());
-        //kontrolli i ores
-        for (ShowTime sh : sameRoomAndDateShowTimes) {
-            LocalDateTime startDateAndTimeOfTable = LocalDateTime.of(sh.getDate(),sh.getStartTime());
-            LocalDate theNextDay = sh.getDate().plusDays(1);
-
-            //nese filmi eshte jashte orarit
-             if (toSave.getEndTime().isAfter(LocalDateTime.of(theNextDay,LocalTime.parse("01:00:00")))) {
-                 String[] dateAndTime = toSave.getEndTime().toString().split("T");
-                throw new HourConfusion(String.format("Showtime that you are creating has a movie which ends at %s, whereas the cinema closes at %s AM!"
-                        ,dateAndTime[1] , "01:00"));
-
-            }else if (toSave.getStartTime().isBefore(LocalTime.parse("10:00"))) {
-                 throw new HourConfusion("That is not a cinema hour! Cinema opens at 10:00 AM");
-                 //nese ska perplasje oraresh
-             }
-            else if ((startDateAndTimeOfEntity.isBefore(startDateAndTimeOfTable)
-                    && toSave.getReadyForNextTime().isAfter(startDateAndTimeOfTable) && toSave.getReadyForNextTime().isBefore(sh.getReadyForNextTime()))
-                        ||
-                    (startDateAndTimeOfEntity.isAfter(startDateAndTimeOfTable) && startDateAndTimeOfEntity.isBefore(sh.getReadyForNextTime())
-                            && toSave.getReadyForNextTime().isAfter(startDateAndTimeOfTable) )
-                    ||
-                    (startDateAndTimeOfEntity.equals(startDateAndTimeOfTable)||toSave.getReadyForNextTime().equals(sh.getReadyForNextTime()))
-                    ){
-                 String[] dateAndTime = sh.getEndTime().toString().split("T");
-                throw new HourConfusion(String.format("There is a movie that starts at %s and ends at %s in room : %s!"
-                        , sh.getStartTime(), dateAndTime[1], sh.getRoom().getName()));
-            }
-        }
         return ShowTimeMapper.toDTO(showTimeRepository.save(toSave));
     }
 
+    //util per create
     @Override
     public List<ShowTime> findByRoomAndDate(Integer room, LocalDate date) {
         Room roomToFind = roomRepository.findById(room)
@@ -121,15 +80,91 @@ public class ShowTimeServiceImpl implements ShowTimeService {
                         "Room with name %s does not exist!", room
                 )));
 
-        return showTimeRepository.findByRoomAndDateOrderByDateAscStartTimeAsc(roomToFind, date);
+        return showTimeRepository.findByRoomAndStartDateOrderByStartDateAscStartTimeAsc(roomToFind, date);
     }
 
     @Override
-    public List<ShowTimeDTO> findByDate(String date) {
-        LocalDate formattedDate = LocalDate.parse(date);
+    public ShowTime findById(Integer id) {
+        return showTimeRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(String.format("ShowTime with id %s not found!", id))
+        );
+    }
 
-        return showTimeRepository.findByDateOrderByStartTime(formattedDate).stream()
+    @Override
+    public List<ShowTimeDTO> search(ShowTimeSearchDTO dto) {
+        System.out.println(dto.getMovieId());
+
+        return showTimeRepository.searchShowTimes(dto.getMovieId(),dto.getRoomId(), dto.getStartDate()
+                        , dto.getStartTime(),dto.getEndDate(),dto.getEndTime() , dto.getDeleted()).stream()
                 .map(ShowTimeMapper::toDTO)
                 .toList();
     }
+
+    //utility to check available hour
+    @Override
+    public void checkHourAvailability(ShowTime toSave) {
+        List<ShowTime> sameRoomAndDateShowTimes = findByRoomAndDate(toSave.getRoom().getId(), toSave.getStartDate());
+        LocalDateTime startDateAndTimeOfEntity = LocalDateTime.of(toSave.getStartDate(), toSave.getStartTime());
+        LocalDateTime endDateAndTimeOfEntity = LocalDateTime.of(toSave.getEndDate(), toSave.getEndTime());
+        //kontrolli i ores
+        //nese filmi eshte jashte orarit
+        if (!startDateAndTimeOfEntity.isAfter(LocalDateTime.now())){
+            throw new HourConfusion("Confusion!");
+        }
+        else if (LocalTime.from(endDateAndTimeOfEntity).isAfter((LocalTime.parse("01:00:00")))&&
+        LocalTime.from(endDateAndTimeOfEntity).isBefore(LocalTime.parse("10:00:00"))) {
+            String[] dateAndTime = endDateAndTimeOfEntity.toString().split("T");
+            throw new HourConfusion(String.format("Showtime that you are creating has a movie which ends at %s, whereas the cinema closes at %s AM!"
+                    , dateAndTime[1], "01:00"));
+
+        } else if (toSave.getStartTime().isBefore(LocalTime.parse("10:00"))) {
+            throw new HourConfusion("That is not a cinema hour! Cinema opens at 10:00 AM");
+            //nese ska perplasje oraresh
+        }else{
+            for (ShowTime sh : sameRoomAndDateShowTimes) {
+                LocalDateTime startDateAndTimeOfTable = LocalDateTime.of(sh.getStartDate(), sh.getStartTime());
+
+                if ((startDateAndTimeOfEntity.isBefore(startDateAndTimeOfTable)
+                        && toSave.getReadyForNextTime().isAfter(startDateAndTimeOfTable) && toSave.getReadyForNextTime().isBefore(sh.getReadyForNextTime()))
+                        ||
+                        (startDateAndTimeOfEntity.isAfter(startDateAndTimeOfTable) && startDateAndTimeOfEntity.isBefore(sh.getReadyForNextTime())
+                                && toSave.getReadyForNextTime().isAfter(startDateAndTimeOfTable))
+                        ||
+                        (startDateAndTimeOfEntity.equals(startDateAndTimeOfTable) || toSave.getReadyForNextTime().equals(sh.getReadyForNextTime()))
+                ) {
+
+                    throw new HourConfusion(String.format("There is a movie that starts at %s and ends at %s in room : %s!"
+                            , sh.getStartTime(), sh.getEndTime(), sh.getRoom().getName()));
+                }
+
+            }
+
+        }
+
+    }
+
+    public void calculateEndDateAndTime(ShowTime toSave){
+        //llogarit ne ore dhe minuta filmin
+        int hours = toSave.getMovie().getLength() / 60;
+        int minutes = toSave.getMovie().getLength() % 60;
+        String length = "0" + hours + ":" + ((minutes / 10 == 0) ? "0" + minutes % 10 : minutes) + ":00";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        LocalTime formattedMovieLength = LocalTime.parse(length, formatter);
+
+        //llogarit endTime sepse edhe mund te kaloje diten tjeter
+
+        LocalDateTime endTimeAndDate = LocalDateTime.of(toSave.getStartDate(), toSave.getStartTime())
+                .plusHours(formattedMovieLength.getHour())
+                .plusMinutes(formattedMovieLength.getMinute());
+
+        LocalDate endDate = LocalDate.from(endTimeAndDate);
+        toSave.setEndDate(endDate);
+        LocalTime endTime = LocalTime.from(endTimeAndDate);
+        toSave.setEndTime(endTime);
+
+        //llogarit oren kur salla tjeter eshte gati
+        toSave.setReadyForNextTime(endTimeAndDate.plusHours(1));
+    }
+
+
 }

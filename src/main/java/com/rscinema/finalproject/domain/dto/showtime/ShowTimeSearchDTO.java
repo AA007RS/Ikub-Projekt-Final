@@ -1,23 +1,20 @@
 package com.rscinema.finalproject.domain.dto.showtime;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-@Builder
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class ShowTimeDTO {
-    private Integer id;
-    private String movie;
-    private String room;
+public class ShowTimeSearchDTO {
+
+    private Integer movieId;
+    private Integer roomId;
     private LocalDate startDate;
     private LocalTime startTime;
     private LocalDate endDate;
     private LocalTime endTime;
-    private LocalTime readyForNextTime;
-    private Double price;
+    private Boolean deleted;
 }

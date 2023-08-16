@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MovieRepository extends JpaRepository<Movie,Integer> {
-
     @Query("SELECT m FROM Movie m WHERE "+
             "(m.title ILIKE concat(:title,'%') OR :title IS NULL) AND "+
             "(m.deleted = :deleted OR :deleted IS NULL) ORDER BY m.yearReleased desc ")

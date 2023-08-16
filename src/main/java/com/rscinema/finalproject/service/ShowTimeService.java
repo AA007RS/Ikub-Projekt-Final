@@ -2,6 +2,7 @@ package com.rscinema.finalproject.service;
 
 import com.rscinema.finalproject.domain.dto.showtime.RegisterShowTimeDTO;
 import com.rscinema.finalproject.domain.dto.showtime.ShowTimeDTO;
+import com.rscinema.finalproject.domain.dto.showtime.ShowTimeSearchDTO;
 import com.rscinema.finalproject.domain.entity.ShowTime;
 
 import java.time.LocalDate;
@@ -12,5 +13,6 @@ public interface ShowTimeService {
 
     ShowTimeDTO create(RegisterShowTimeDTO dto);
     List<ShowTime> findByRoomAndDate(Integer room, LocalDate date);
-    List<ShowTimeDTO> findByDate(String date);
+    ShowTime findById(Integer id);
+    List<ShowTimeDTO> search(ShowTimeSearchDTO dto);
 }

@@ -2,6 +2,7 @@ package com.rscinema.finalproject.controller;
 
 import com.rscinema.finalproject.domain.dto.showtime.RegisterShowTimeDTO;
 import com.rscinema.finalproject.domain.dto.showtime.ShowTimeDTO;
+import com.rscinema.finalproject.domain.dto.showtime.ShowTimeSearchDTO;
 import com.rscinema.finalproject.service.ShowTimeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +22,8 @@ public class ShowTimeController {
     public ResponseEntity<ShowTimeDTO> create(@Valid @RequestBody RegisterShowTimeDTO dto){
         return ResponseEntity.ok(showTimeService.create(dto));
     }
-
-    @GetMapping("/getByDate/{date}")
-    public ResponseEntity<List<ShowTimeDTO>> findByDate(@PathVariable("date") String date){
-        return ResponseEntity.ok(showTimeService.findByDate(date));
+    @GetMapping("/admin/search")
+    public ResponseEntity<List<ShowTimeDTO>> search(@RequestBody ShowTimeSearchDTO dto){
+        return ResponseEntity.ok(showTimeService.search(dto));
     }
 }
