@@ -72,6 +72,9 @@ public class User extends BaseEntity<Integer> implements UserDetails {
     }
 
     @Override
+    public String getPassword(){return password; }
+
+    @Override
     public boolean isAccountNonExpired() {
         return true;
     }

@@ -1,6 +1,7 @@
 package com.rscinema.finalproject.domain.mapper;
 
 import com.rscinema.finalproject.domain.dto.showtime.ShowTimeDTO;
+import com.rscinema.finalproject.domain.dto.showtime.UpdateShowTimeDTO;
 import com.rscinema.finalproject.domain.entity.ShowTime;
 
 import java.time.format.DateTimeParseException;
@@ -22,12 +23,18 @@ public class ShowTimeMapper {
                 .build();
     }
 
-    public static ShowTime toEntity(ShowTimeDTO dto) throws DateTimeParseException {
+    public static ShowTime toEntity(ShowTimeDTO dto)  {
 
         return ShowTime.builder()
                 .startDate(dto.getStartDate())
                 .startTime(dto.getStartTime())
                 .price(dto.getPrice())
                 .build();
+    }
+
+    public static ShowTime update(ShowTime entity, UpdateShowTimeDTO dto){
+        entity.setStartDate(dto.getStartDate());
+        entity.setStartTime(dto.getStartTime());
+        return entity;
     }
 }

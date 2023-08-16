@@ -3,6 +3,7 @@ package com.rscinema.finalproject.service.impl;
 import com.rscinema.finalproject.domain.dto.showtime.RegisterShowTimeDTO;
 import com.rscinema.finalproject.domain.dto.showtime.ShowTimeDTO;
 import com.rscinema.finalproject.domain.dto.showtime.ShowTimeSearchDTO;
+import com.rscinema.finalproject.domain.dto.showtime.UpdateShowTimeDTO;
 import com.rscinema.finalproject.domain.entity.Movie;
 import com.rscinema.finalproject.domain.entity.ShowTime;
 import com.rscinema.finalproject.domain.entity.room.Room;
@@ -100,8 +101,22 @@ public class ShowTimeServiceImpl implements ShowTimeService {
                 .toList();
     }
 
-    //utility to check available hour
     @Override
+    public ShowTimeDTO update(UpdateShowTimeDTO dto) {
+        ShowTime showTime = ShowTimeMapper.update(findById(dto.getCurrentId()),dto);
+
+        Movie movie = movieRepository.findById(dto.getMovieId())
+                .orElseThrow(()->new ResourceNotFoundException(String.format(
+                        "No movie found with id %s",dto.getMovieId()
+                )));
+        showTime.setMovie(movie);
+        calculateEndDateAndTime(showTime);
+        checkHourAvailability(showTime);
+
+        return ShowTimeMapper.toDTO(showTimeRepository.save(showTime));
+    }
+
+    //utility to check available hour
     public void checkHourAvailability(ShowTime toSave) {
         List<ShowTime> sameRoomAndDateShowTimes = findByRoomAndDate(toSave.getRoom().getId(), toSave.getStartDate());
         LocalDateTime startDateAndTimeOfEntity = LocalDateTime.of(toSave.getStartDate(), toSave.getStartTime());
@@ -122,6 +137,10 @@ public class ShowTimeServiceImpl implements ShowTimeService {
             //nese ska perplasje oraresh
         }else{
             for (ShowTime sh : sameRoomAndDateShowTimes) {
+                if (toSave.getId()==sh.getId()){
+                    //per update
+                    continue;
+                }
                 LocalDateTime startDateAndTimeOfTable = LocalDateTime.of(sh.getStartDate(), sh.getStartTime());
 
                 if ((startDateAndTimeOfEntity.isBefore(startDateAndTimeOfTable)
@@ -133,8 +152,9 @@ public class ShowTimeServiceImpl implements ShowTimeService {
                         (startDateAndTimeOfEntity.equals(startDateAndTimeOfTable) || toSave.getReadyForNextTime().equals(sh.getReadyForNextTime()))
                 ) {
 
-                    throw new HourConfusion(String.format("There is a movie that starts at %s and ends at %s in room : %s!"
-                            , sh.getStartTime(), sh.getEndTime(), sh.getRoom().getName()));
+                    throw new HourConfusion(String.format("There is a movie that starts at %s and ends at %s in room : %s " +
+                                    "for the date %s!"
+                            , sh.getStartTime(), sh.getEndTime(), sh.getRoom().getName(),sh.getEndDate()));
                 }
 
             }
