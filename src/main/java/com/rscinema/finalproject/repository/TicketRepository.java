@@ -13,8 +13,8 @@ public interface TicketRepository extends JpaRepository<Ticket,Integer> {
     void updateDeleted(@Param("deleted")boolean deleted,@Param("sht") Integer sht);
 
     @Modifying
-    @Query("UPDATE Ticket t SET t.deleted = true where t.showTime = :showTime")
-    void updateFromExpiredShowtime(@Param("showTime")ShowTime showTime);
+    @Query("UPDATE Ticket t SET t.deleted = true where t.showTime.id = :showTime")
+    void updateFromExpiredShowtime(@Param("showTime")Integer showTime);
 
 
 }

@@ -160,14 +160,14 @@ public class ShowTimeServiceImpl implements ShowTimeService {
     @Transactional
     public void expire() {
         System.out.println("REFRESH...");
-        List<ShowTime> expired = showTimeRepository.findByDeletedIsFalseAndEndDateBeforeAndEndTimeBefore(
-                LocalDate.from(LocalDateTime.now()), LocalTime.from(LocalDateTime.now())
+        List<ShowTime> expired = showTimeRepository.findByDeletedFalseAndReadyForNextTimeLessThan(
+                LocalDateTime.now()
         );
         if (expired.isEmpty()) {
             return;
         }
         for (ShowTime sh : expired) {
-            ticketRepository.updateFromExpiredShowtime(sh);
+            ticketRepository.updateFromExpiredShowtime(sh.getId());
             sh.setDeleted(true);
             showTimeRepository.save(sh);
         }

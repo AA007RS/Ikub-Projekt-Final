@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +36,7 @@ public interface ShowTimeRepository extends JpaRepository<ShowTime, Integer> {
     Optional<ShowTime> findByIdAndDeletedIsFalse(Integer id);
     List<ShowTime> findByDeletedIsFalseAndMovie(Movie movie);
     List<ShowTime> findByDeletedIsFalseAndRoom(Room room);
-    List<ShowTime> findByDeletedIsFalseAndEndDateBeforeAndEndTimeBefore(LocalDate date, LocalTime time);
+    List<ShowTime> findByDeletedFalseAndReadyForNextTimeLessThan(LocalDateTime dateTime);
 
     @Query("SELECT sh FROM ShowTime sh WHERE " +
             "(sh.movie.title ILIKE concat(:movieTitle,'%') OR :movieTitle IS NULL) AND" +
