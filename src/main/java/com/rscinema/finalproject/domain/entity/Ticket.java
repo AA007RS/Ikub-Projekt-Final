@@ -28,8 +28,8 @@ public class Ticket extends BaseEntity<Integer> {
     @JoinColumn(name = "showtime_id", referencedColumnName = "id")
     private ShowTime showTime;
 
-    @Column(name = "status")
-    private boolean status;
+    @Column(name = "reserved")
+    private boolean reserved;
 
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.DETACH})
     @JoinColumn(name = "order_id", referencedColumnName = "id")

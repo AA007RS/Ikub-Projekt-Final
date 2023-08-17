@@ -34,15 +34,20 @@ public interface ShowTimeRepository extends JpaRepository<ShowTime, Integer> {
     List<ShowTime> findByRoomAndStartDateAndDeletedIsFalseOrderByStartDateAscStartTimeAsc(Room room, LocalDate date);
 
     Optional<ShowTime> findByIdAndDeletedIsFalse(Integer id);
+
     List<ShowTime> findByDeletedIsFalseAndMovie(Movie movie);
+
     List<ShowTime> findByDeletedIsFalseAndRoom(Room room);
+
     List<ShowTime> findByDeletedFalseAndReadyForNextTimeLessThan(LocalDateTime dateTime);
 
     @Query("SELECT sh FROM ShowTime sh WHERE " +
             "(sh.movie.title ILIKE concat(:movieTitle,'%') OR :movieTitle IS NULL) AND" +
             "(sh.startDate = :date OR :date IS NULL) AND " +
-            "sh.deleted = false " +
+            "sh.deleted = false AND " +
+            "sh.startTime > :startTime " +
             "ORDER BY sh.startDate ASC," +
             "sh.movie.title ASC")
-    List<ShowTime> searchCustomerView(@Param("movieTitle") String movieTitle, @Param("date") LocalDate date);
+    List<ShowTime> searchCustomerView(@Param("movieTitle") String movieTitle, @Param("startTime") LocalTime time,
+                                      @Param("date") LocalDate date);
 }

@@ -193,11 +193,11 @@ public class ShowTimeServiceImpl implements ShowTimeService {
     @Override
     public List<ShowTimeCustomerDTO> searchCustomerView(String movie, LocalDate date) {
         if (date != null) {
-            if (!date.isAfter(LocalDate.from(LocalDateTime.now()))) {
+            if (date.isBefore(LocalDate.from(LocalDateTime.now()))) {
                 throw new HourConfusion("Not available date!");
             }
         }
-        return showTimeRepository.searchCustomerView(movie, date)
+        return showTimeRepository.searchCustomerView(movie,LocalTime.from(LocalDateTime.now()),date)
                 .stream()
                 .map(sht -> ShowTimeCustomerDTO.builder()
                         .id(sht.getId())
