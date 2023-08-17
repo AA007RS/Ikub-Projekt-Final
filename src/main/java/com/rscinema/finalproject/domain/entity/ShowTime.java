@@ -7,6 +7,7 @@ import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -33,7 +34,7 @@ public class ShowTime extends BaseEntity<Integer> {
     @JoinColumn(name = "room_id", referencedColumnName = "id")
     private Room room;
 
-    @Column(name="startDate")
+    @Column(name = "startDate")
     private LocalDate startDate;
 
     @Column(name = "startTime")
@@ -45,7 +46,7 @@ public class ShowTime extends BaseEntity<Integer> {
     @Column(name = "endTime")
     private LocalTime endTime;
 
-    @Column(name ="ready_for_next")
+    @Column(name = "ready_for_next")
     private LocalDateTime readyForNextTime;
 
     @Column(name = "price")
@@ -53,5 +54,4 @@ public class ShowTime extends BaseEntity<Integer> {
 
     @OneToMany(mappedBy = "showTime", cascade = CascadeType.ALL)
     private List<Ticket> tickets;
-
 }

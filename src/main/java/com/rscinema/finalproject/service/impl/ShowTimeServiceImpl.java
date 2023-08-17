@@ -12,7 +12,9 @@ import com.rscinema.finalproject.domain.mapper.ShowTimeMapper;
 import com.rscinema.finalproject.repository.MovieRepository;
 import com.rscinema.finalproject.repository.RoomRepository;
 import com.rscinema.finalproject.repository.ShowTimeRepository;
+import com.rscinema.finalproject.repository.TicketRepository;
 import com.rscinema.finalproject.service.ShowTimeService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -30,7 +33,7 @@ public class ShowTimeServiceImpl implements ShowTimeService {
     private final ShowTimeRepository showTimeRepository;
     private final MovieRepository movieRepository;
     private final RoomRepository roomRepository;
-
+    private final TicketRepository ticketRepository;
     @Override
     public ShowTimeDTO create(RegisterShowTimeDTO dto) {
         //find existing movie
@@ -67,6 +70,23 @@ public class ShowTimeServiceImpl implements ShowTimeService {
         calculateEndDateAndTime(toSave);
 
         checkHourAvailability(toSave);
+
+        //generate tickets available for this showtime
+        int rows = toSave.getRoom().getRoomSize().getRow_size();
+        int rowSize = toSave.getRoom().getRoomSize().getRow_num();
+
+        List<Ticket> tickets = new ArrayList<>();
+
+        for (int i = 1; i <= rows; i++) {
+            for (int j = 1; j <= rowSize; j++) {
+                tickets.add(Ticket.builder()
+                        .rowNumber(i)
+                        .seatNumber(j)
+                        .showTime(toSave)
+                        .build());
+            }
+        }
+        toSave.setTickets(tickets);
 
         return ShowTimeMapper.toDTO(showTimeRepository.save(toSave));
     }
@@ -114,33 +134,31 @@ public class ShowTimeServiceImpl implements ShowTimeService {
         return ShowTimeMapper.toDTO(showTimeRepository.save(showTime));
     }
 
+    @Transactional
     @Override
     public String delete(Integer id) {
         ShowTime showTime = findById(id);
         showTime.setDeleted(true);
-        for (Ticket t : showTime.getTickets()) {
-            t.setDeleted(true);
-        }
+        ticketRepository.updateDeleted(true,showTime.getId());
         showTimeRepository.save(showTime);
         return String.format("ShowTime with id %s deleted!", id);
     }
 
+    @Transactional
     @Override
     public void restore(Integer id) {
         ShowTime showTime = findById(id);
         checkHourAvailability(showTime);
         showTime.setDeleted(false);
-        for(Ticket t : showTime.getTickets()){
-            t.setDeleted(false);
-        }
+        ticketRepository.updateDeleted(false,showTime.getId());
         showTimeRepository.save(showTime);
     }
 
     @Override
     public ShowTimeCustomerDTO findByIdCustomer(Integer id) {
         ShowTime showTime = showTimeRepository.findByIdAndDeletedIsFalse(id)
-                .orElseThrow(()-> new ResourceNotFoundException(String.format(
-                        "Showtime with id %s not found!",id
+                .orElseThrow(() -> new ResourceNotFoundException(String.format(
+                        "Showtime with id %s not found!", id
                 )));
         return ShowTimeCustomerDTO.builder()
                 .id(showTime.getId())
@@ -154,12 +172,12 @@ public class ShowTimeServiceImpl implements ShowTimeService {
 
     @Override
     public List<ShowTimeCustomerDTO> searchCustomerView(String movie, LocalDate date) {
-       if(date != null){
-           if(!date.isAfter(LocalDate.from(LocalDateTime.now()))){
-               throw new HourConfusion("Not available date!");
-           }
-       }
-        return showTimeRepository.searchCustomerView(movie,date)
+        if (date != null) {
+            if (!date.isAfter(LocalDate.from(LocalDateTime.now()))) {
+                throw new HourConfusion("Not available date!");
+            }
+        }
+        return showTimeRepository.searchCustomerView(movie, date)
                 .stream()
                 .map(sht -> ShowTimeCustomerDTO.builder()
                         .id(sht.getId())
