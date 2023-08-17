@@ -11,12 +11,13 @@ public interface ShowTimeService {
     ShowTimeDTO create(RegisterShowTimeDTO dto);
     List<ShowTime> findByRoomAndDate(Integer room, LocalDate date);
     ShowTime findById(Integer id);
+    List<ShowTimeDTO> findByMovieIdAdminView(Integer id);
+    List<ShowTimeDTO> findByRoomId(Integer id);
     List<ShowTimeDTO> search(ShowTimeSearchDTO dto);
     ShowTimeDTO update(UpdateShowTimeDTO dto);
     String delete(Integer id);
     void restore(Integer id);
     ShowTimeCustomerDTO findByIdCustomerView(Integer id);
     List<ShowTimeCustomerDTO> searchCustomerView(String movie, LocalDate date);
-    List<ShowTimeDTO> findByMovieIdAdminView(Integer id);
     List<ShowTimeCustomerDTO> findByMovieIdCustomerView(Integer id);
 }

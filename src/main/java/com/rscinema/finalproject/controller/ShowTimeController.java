@@ -29,6 +29,11 @@ public class ShowTimeController {
         return ResponseEntity.ok(showTimeService.findByMovieIdAdminView(id));
     }
 
+    @GetMapping("/admin/available/byRoom/{id}")
+    public ResponseEntity<List<ShowTimeDTO>> findByRoomId(@PathVariable("id")Integer id){
+        return ResponseEntity.ok(showTimeService.findByRoomId(id));
+    }
+
     @PostMapping("/admin")
     public ResponseEntity<ShowTimeDTO> create(@Valid @RequestBody RegisterShowTimeDTO dto) {
         return ResponseEntity.ok(showTimeService.create(dto));

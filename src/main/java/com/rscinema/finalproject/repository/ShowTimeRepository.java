@@ -34,6 +34,7 @@ public interface ShowTimeRepository extends JpaRepository<ShowTime, Integer> {
 
     Optional<ShowTime> findByIdAndDeletedIsFalse(Integer id);
     List<ShowTime> findByDeletedIsFalseAndMovie(Movie movie);
+    List<ShowTime> findByDeletedIsFalseAndRoom(Room room);
     List<ShowTime> findByDeletedIsFalseAndEndDateBeforeAndEndTimeBefore(LocalDate date, LocalTime time);
 
     @Query("SELECT sh FROM ShowTime sh WHERE " +

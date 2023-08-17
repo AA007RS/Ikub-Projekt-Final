@@ -222,6 +222,18 @@ public class ShowTimeServiceImpl implements ShowTimeService {
     }
 
     @Override
+    public List<ShowTimeDTO> findByRoomId(Integer id) {
+        Room room = roomRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(String.format(
+                        "Room with id %s not found!",id
+                )));
+        return showTimeRepository.findByDeletedIsFalseAndRoom(room).stream()
+                .map(ShowTimeMapper::toDTO)
+                .toList();
+
+    }
+
+    @Override
     public List<ShowTimeCustomerDTO> findByMovieIdCustomerView(Integer id) {
         Movie movie = movieRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format(
