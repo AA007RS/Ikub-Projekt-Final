@@ -34,6 +34,7 @@ public class ShowTimeServiceImpl implements ShowTimeService {
     private final MovieRepository movieRepository;
     private final RoomRepository roomRepository;
     private final TicketRepository ticketRepository;
+
     @Override
     public ShowTimeDTO create(RegisterShowTimeDTO dto) {
         //find existing movie
@@ -139,7 +140,7 @@ public class ShowTimeServiceImpl implements ShowTimeService {
     public String delete(Integer id) {
         ShowTime showTime = findById(id);
         showTime.setDeleted(true);
-        ticketRepository.updateDeleted(true,showTime.getId());
+        ticketRepository.updateDeleted(true, showTime.getId());
         showTimeRepository.save(showTime);
         return String.format("ShowTime with id %s deleted!", id);
     }
@@ -150,8 +151,16 @@ public class ShowTimeServiceImpl implements ShowTimeService {
         ShowTime showTime = findById(id);
         checkHourAvailability(showTime);
         showTime.setDeleted(false);
-        ticketRepository.updateDeleted(false,showTime.getId());
+        ticketRepository.updateDeleted(false, showTime.getId());
         showTimeRepository.save(showTime);
+    }
+
+    @Transactional
+    @Override
+    public void expire() {
+        showTimeRepository.updateAll(LocalDate.from(LocalDateTime.now()),
+                LocalTime.from(LocalDateTime.now()));
+        ticketRepository.updateFromExpiredShowtime();
     }
 
     @Override

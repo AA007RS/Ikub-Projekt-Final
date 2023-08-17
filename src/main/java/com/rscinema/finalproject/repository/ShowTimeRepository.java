@@ -3,7 +3,9 @@ package com.rscinema.finalproject.repository;
 import com.rscinema.finalproject.domain.dto.showtime.ShowTimeCustomerDTO;
 import com.rscinema.finalproject.domain.entity.ShowTime;
 import com.rscinema.finalproject.domain.entity.room.Room;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -33,6 +35,11 @@ public interface ShowTimeRepository extends JpaRepository<ShowTime, Integer> {
     List<ShowTime> findByRoomAndStartDateAndDeletedIsFalseOrderByStartDateAscStartTimeAsc(Room room, LocalDate date);
 
     Optional<ShowTime> findByIdAndDeletedIsFalse(Integer id);
+    @Modifying
+    @Query("UPDATE ShowTime sh SET sh.deleted=true WHERE " +
+            "sh.endDate <= :date AND sh.endTime <= :time")
+    void updateAll(@Param("date") LocalDate date,@Param("time") LocalTime time);
+
 
     @Query("SELECT sh FROM ShowTime sh WHERE " +
             "(sh.movie.title ILIKE concat(:movieTitle,'%') OR :movieTitle IS NULL) AND" +

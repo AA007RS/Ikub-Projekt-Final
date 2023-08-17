@@ -3,6 +3,7 @@ package com.rscinema.finalproject.controller;
 import com.rscinema.finalproject.domain.dto.showtime.*;
 import com.rscinema.finalproject.domain.mapper.ShowTimeMapper;
 import com.rscinema.finalproject.service.ShowTimeService;
+import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,11 @@ import java.util.List;
 public class ShowTimeController {
 
     private final ShowTimeService showTimeService;
+
+    @PostConstruct
+    public void expire(){
+        showTimeService.expire();
+    }
 
     @GetMapping("/admin/{id}")
     public ResponseEntity<ShowTimeDTO> findByIdAdminView(@PathVariable("id")Integer id){
