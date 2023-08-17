@@ -60,8 +60,8 @@ public class ShowTimeController {
     }
 
     @GetMapping("/customer/search")
-    public ResponseEntity<List<ShowTimeCustomerDTO>> searchCustomerView(@RequestParam String movie,
-                                                                        @RequestParam LocalDate date){
+    public ResponseEntity<List<ShowTimeCustomerDTO>> searchCustomerView(@RequestParam(required = false) String movie,
+                                                                        @RequestParam(required = false) LocalDate date){
         return ResponseEntity.ok(showTimeService.searchCustomerView(movie,date));
     }
 }
