@@ -4,7 +4,6 @@ import com.rscinema.finalproject.domain.dto.showtime.*;
 import com.rscinema.finalproject.domain.entity.ShowTime;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 public interface ShowTimeService {
@@ -16,7 +15,8 @@ public interface ShowTimeService {
     ShowTimeDTO update(UpdateShowTimeDTO dto);
     String delete(Integer id);
     void restore(Integer id);
-    void expire();
-    ShowTimeCustomerDTO findByIdCustomer(Integer id);
+    ShowTimeCustomerDTO findByIdCustomerView(Integer id);
     List<ShowTimeCustomerDTO> searchCustomerView(String movie, LocalDate date);
+    List<ShowTimeDTO> findByMovieIdAdminView(Integer id);
+    List<ShowTimeCustomerDTO> findByMovieIdCustomerView(Integer id);
 }

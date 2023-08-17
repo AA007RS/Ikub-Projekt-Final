@@ -3,7 +3,6 @@ package com.rscinema.finalproject.controller;
 import com.rscinema.finalproject.domain.dto.showtime.*;
 import com.rscinema.finalproject.domain.mapper.ShowTimeMapper;
 import com.rscinema.finalproject.service.ShowTimeService;
-import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +22,11 @@ public class ShowTimeController {
     @GetMapping("/admin/{id}")
     public ResponseEntity<ShowTimeDTO> findByIdAdminView(@PathVariable("id")Integer id){
         return ResponseEntity.ok(ShowTimeMapper.toDTO(showTimeService.findById(id)));
+    }
+
+    @GetMapping("/admin/available/byMovie/{id}")
+    public ResponseEntity<List<ShowTimeDTO>> findByMovieIdAdminView(@PathVariable("id")Integer id){
+        return ResponseEntity.ok(showTimeService.findByMovieIdAdminView(id));
     }
 
     @PostMapping("/admin")
@@ -57,7 +61,12 @@ public class ShowTimeController {
     @GetMapping("/customer/{id}")
     public ResponseEntity<ShowTimeCustomerDTO> findByIdCustomerView(@PathVariable("id")
                                                                     Integer id){
-        return ResponseEntity.ok(showTimeService.findByIdCustomer(id));
+        return ResponseEntity.ok(showTimeService.findByIdCustomerView(id));
+    }
+
+    @GetMapping("/customer/byMovie/{id}")
+    public ResponseEntity<List<ShowTimeCustomerDTO>> findMovieByIdCustomerView(@PathVariable("id")Integer id){
+        return ResponseEntity.ok(showTimeService.findByMovieIdCustomerView(id));
     }
 
     @GetMapping("/customer/search")

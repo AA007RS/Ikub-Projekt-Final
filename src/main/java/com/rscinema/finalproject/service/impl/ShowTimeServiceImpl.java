@@ -158,16 +158,15 @@ public class ShowTimeServiceImpl implements ShowTimeService {
 
     @Scheduled(fixedRate = 300000)
     @Transactional
-    @Override
     public void expire() {
         System.out.println("REFRESH...");
         List<ShowTime> expired = showTimeRepository.findByDeletedIsFalseAndEndDateBeforeAndEndTimeBefore(
                 LocalDate.from(LocalDateTime.now()), LocalTime.from(LocalDateTime.now())
         );
-        if (expired.isEmpty()){
+        if (expired.isEmpty()) {
             return;
         }
-        for (ShowTime sh : expired){
+        for (ShowTime sh : expired) {
             ticketRepository.updateFromExpiredShowtime(sh);
             sh.setDeleted(true);
             showTimeRepository.save(sh);
@@ -176,7 +175,7 @@ public class ShowTimeServiceImpl implements ShowTimeService {
     }
 
     @Override
-    public ShowTimeCustomerDTO findByIdCustomer(Integer id) {
+    public ShowTimeCustomerDTO findByIdCustomerView(Integer id) {
         ShowTime showTime = showTimeRepository.findByIdAndDeletedIsFalse(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format(
                         "Showtime with id %s not found!", id
@@ -207,6 +206,35 @@ public class ShowTimeServiceImpl implements ShowTimeService {
                         .startDate(sht.getStartDate())
                         .startTime(sht.getStartTime())
                         .endTime(sht.getEndTime())
+                        .build())
+                .toList();
+    }
+
+    @Override
+    public List<ShowTimeDTO> findByMovieIdAdminView(Integer id) {
+        Movie movie = movieRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format(
+                        "Movie with id %s not found!", id
+                )));
+        return showTimeRepository.findByDeletedIsFalseAndMovie(movie).stream()
+                .map(ShowTimeMapper::toDTO)
+                .toList();
+    }
+
+    @Override
+    public List<ShowTimeCustomerDTO> findByMovieIdCustomerView(Integer id) {
+        Movie movie = movieRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format(
+                        "Movie with id %s not found!", id
+                )));
+        return showTimeRepository.findByDeletedIsFalseAndMovie(movie).stream()
+                .map(sh -> ShowTimeCustomerDTO.builder()
+                        .id(sh.getId())
+                        .movie(sh.getMovie().getTitle())
+                        .room(sh.getRoom().getName())
+                        .startDate(sh.getStartDate())
+                        .startTime(sh.getStartTime())
+                        .endTime(sh.getEndTime())
                         .build())
                 .toList();
     }

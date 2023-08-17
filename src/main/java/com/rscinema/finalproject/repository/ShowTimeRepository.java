@@ -1,5 +1,6 @@
 package com.rscinema.finalproject.repository;
 
+import com.rscinema.finalproject.domain.entity.Movie;
 import com.rscinema.finalproject.domain.entity.ShowTime;
 import com.rscinema.finalproject.domain.entity.room.Room;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -32,6 +33,7 @@ public interface ShowTimeRepository extends JpaRepository<ShowTime, Integer> {
     List<ShowTime> findByRoomAndStartDateAndDeletedIsFalseOrderByStartDateAscStartTimeAsc(Room room, LocalDate date);
 
     Optional<ShowTime> findByIdAndDeletedIsFalse(Integer id);
+    List<ShowTime> findByDeletedIsFalseAndMovie(Movie movie);
     List<ShowTime> findByDeletedIsFalseAndEndDateBeforeAndEndTimeBefore(LocalDate date, LocalTime time);
 
     @Query("SELECT sh FROM ShowTime sh WHERE " +
