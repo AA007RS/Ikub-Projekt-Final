@@ -1,5 +1,6 @@
 package com.rscinema.finalproject.repository;
 
+import com.rscinema.finalproject.domain.dto.showtime.ShowTimeCustomerDTO;
 import com.rscinema.finalproject.domain.entity.ShowTime;
 import com.rscinema.finalproject.domain.entity.room.Room;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface ShowTimeRepository extends JpaRepository<ShowTime, Integer> {
 
@@ -29,4 +31,14 @@ public interface ShowTimeRepository extends JpaRepository<ShowTime, Integer> {
                                    @Param("deleted") Boolean deleted);
 
     List<ShowTime> findByRoomAndStartDateAndDeletedIsFalseOrderByStartDateAscStartTimeAsc(Room room, LocalDate date);
+
+    Optional<ShowTime> findByIdAndDeletedIsFalse(Integer id);
+
+    @Query("SELECT sh FROM ShowTime sh WHERE " +
+            "(sh.movie.title ILIKE concat(:movieTitle,'%') OR :movieTitle IS NULL) AND" +
+            "(sh.startDate = :date OR :date IS NULL) AND " +
+            "sh.deleted = false " +
+            "ORDER BY sh.startDate ASC," +
+            "sh.movie.title ASC")
+    List<ShowTime> searchCustomerView(@Param("movieTitle") String movieTitle, @Param("date") LocalDate date);
 }

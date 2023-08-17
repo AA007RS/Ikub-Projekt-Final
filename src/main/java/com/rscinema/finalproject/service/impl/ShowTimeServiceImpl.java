@@ -1,9 +1,6 @@
 package com.rscinema.finalproject.service.impl;
 
-import com.rscinema.finalproject.domain.dto.showtime.RegisterShowTimeDTO;
-import com.rscinema.finalproject.domain.dto.showtime.ShowTimeDTO;
-import com.rscinema.finalproject.domain.dto.showtime.ShowTimeSearchDTO;
-import com.rscinema.finalproject.domain.dto.showtime.UpdateShowTimeDTO;
+import com.rscinema.finalproject.domain.dto.showtime.*;
 import com.rscinema.finalproject.domain.entity.Movie;
 import com.rscinema.finalproject.domain.entity.ShowTime;
 import com.rscinema.finalproject.domain.entity.Ticket;
@@ -137,6 +134,40 @@ public class ShowTimeServiceImpl implements ShowTimeService {
             t.setDeleted(false);
         }
         showTimeRepository.save(showTime);
+    }
+
+    @Override
+    public ShowTimeCustomerDTO findByIdCustomer(Integer id) {
+        ShowTime showTime = showTimeRepository.findByIdAndDeletedIsFalse(id)
+                .orElseThrow(()-> new ResourceNotFoundException(String.format(
+                        "Showtime with id %s not found!",id
+                )));
+        return ShowTimeCustomerDTO.builder()
+                .id(showTime.getId())
+                .movie(showTime.getMovie().getTitle())
+                .room(showTime.getRoom().getName())
+                .startDate(showTime.getStartDate())
+                .startTime(showTime.getStartTime())
+                .endTime(showTime.getEndTime())
+                .build();
+    }
+
+    @Override
+    public List<ShowTimeCustomerDTO> searchCustomerView(String movie, LocalDate date) {
+        if(!date.isAfter(LocalDate.from(LocalDateTime.now()))){
+            throw new HourConfusion("Not available date!");
+        }
+        return showTimeRepository.searchCustomerView(movie,date)
+                .stream()
+                .map(sht -> ShowTimeCustomerDTO.builder()
+                        .id(sht.getId())
+                        .movie(sht.getMovie().getTitle())
+                        .room(sht.getRoom().getName())
+                        .startDate(sht.getStartDate())
+                        .startTime(sht.getStartTime())
+                        .endTime(sht.getEndTime())
+                        .build())
+                .toList();
     }
 
     //utility to check available hour

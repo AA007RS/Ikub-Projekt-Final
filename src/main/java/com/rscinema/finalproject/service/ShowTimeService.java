@@ -16,8 +16,6 @@ public interface ShowTimeService {
     ShowTimeDTO update(UpdateShowTimeDTO dto);
     String delete(Integer id);
     void restore(Integer id);
-
-
-    //find by id customer view
-    //ShowTimeCustomerDTO findByIdCustomer(Integer id);
+    ShowTimeCustomerDTO findByIdCustomer(Integer id);
+    List<ShowTimeCustomerDTO> searchCustomerView(String movie, LocalDate date);
 }

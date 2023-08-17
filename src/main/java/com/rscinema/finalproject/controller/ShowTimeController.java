@@ -1,9 +1,6 @@
 package com.rscinema.finalproject.controller;
 
-import com.rscinema.finalproject.domain.dto.showtime.RegisterShowTimeDTO;
-import com.rscinema.finalproject.domain.dto.showtime.ShowTimeDTO;
-import com.rscinema.finalproject.domain.dto.showtime.ShowTimeSearchDTO;
-import com.rscinema.finalproject.domain.dto.showtime.UpdateShowTimeDTO;
+import com.rscinema.finalproject.domain.dto.showtime.*;
 import com.rscinema.finalproject.domain.mapper.ShowTimeMapper;
 import com.rscinema.finalproject.service.ShowTimeService;
 import jakarta.validation.Valid;
@@ -12,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -53,5 +51,17 @@ public class ShowTimeController {
         showTimeService.restore(id);
         return new ResponseEntity<>(String.format("ShowTime with id %s restored!",id),
                 HttpStatus.OK);
+    }
+
+    @GetMapping("/customer/{id}")
+    public ResponseEntity<ShowTimeCustomerDTO> findByIdCustomerView(@PathVariable("id")
+                                                                    Integer id){
+        return ResponseEntity.ok(showTimeService.findByIdCustomer(id));
+    }
+
+    @GetMapping("/customer/search")
+    public ResponseEntity<List<ShowTimeCustomerDTO>> searchCustomerView(@RequestParam String movie,
+                                                                        @RequestParam LocalDate date){
+        return ResponseEntity.ok(showTimeService.searchCustomerView(movie,date));
     }
 }
