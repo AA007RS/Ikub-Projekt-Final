@@ -20,11 +20,6 @@ public class ShowTimeController {
 
     private final ShowTimeService showTimeService;
 
-    @PostConstruct
-    public void expire(){
-        showTimeService.expire();
-    }
-
     @GetMapping("/admin/{id}")
     public ResponseEntity<ShowTimeDTO> findByIdAdminView(@PathVariable("id")Integer id){
         return ResponseEntity.ok(ShowTimeMapper.toDTO(showTimeService.findById(id)));

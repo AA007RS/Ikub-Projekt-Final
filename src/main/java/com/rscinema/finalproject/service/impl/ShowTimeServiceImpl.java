@@ -16,6 +16,7 @@ import com.rscinema.finalproject.repository.TicketRepository;
 import com.rscinema.finalproject.service.ShowTimeService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -155,12 +156,23 @@ public class ShowTimeServiceImpl implements ShowTimeService {
         showTimeRepository.save(showTime);
     }
 
+    @Scheduled(fixedRate = 300000)
     @Transactional
     @Override
     public void expire() {
-        showTimeRepository.updateAll(LocalDate.from(LocalDateTime.now()),
-                LocalTime.from(LocalDateTime.now()));
-        ticketRepository.updateFromExpiredShowtime();
+        System.out.println("REFRESH...");
+        List<ShowTime> expired = showTimeRepository.findByDeletedIsFalseAndEndDateBeforeAndEndTimeBefore(
+                LocalDate.from(LocalDateTime.now()), LocalTime.from(LocalDateTime.now())
+        );
+        if (expired.isEmpty()){
+            return;
+        }
+        for (ShowTime sh : expired){
+            ticketRepository.updateFromExpiredShowtime(sh);
+            sh.setDeleted(true);
+            showTimeRepository.save(sh);
+        }
+
     }
 
     @Override
