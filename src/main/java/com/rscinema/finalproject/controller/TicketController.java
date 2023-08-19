@@ -21,4 +21,10 @@ public class TicketController {
                                                                          @RequestParam(required = false) Integer row) {
         return ResponseEntity.ok(ticketService.watchAndFilterTicketsOfShowTimeAdmin(showTimeId, reserved, row));
     }
+
+    @GetMapping("/admin/{id}")
+    public ResponseEntity<String> disableTicket(@PathVariable("id")Integer id){
+        ticketService.disableTicket(id);
+        return ResponseEntity.ok(String.format("Ticket with id %s disabled!",id));
+    }
 }
