@@ -45,4 +45,16 @@ public class TicketServiceImpl implements TicketService {
         ticket.setDeleted(true);
         ticketRepository.save(ticket);
     }
+
+    @Override
+    public List<TicketDTO> retrieveAllByShowtime(Integer showTimeId) {
+        ShowTime showTime = showTimeRepository.findById(showTimeId)
+                .orElseThrow(()->new ResourceNotFoundException(String.format(
+                        "Showtime with id %s not found!",showTimeId
+                )));
+
+        return ticketRepository.findAllByShowTimeAndDeletedFalse(showTime).stream()
+                .map(TicketMapper::toDTO)
+                .toList();
+    }
 }

@@ -24,4 +24,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
     List<Ticket> watchTicketsAdmin(@Param("sht") Integer showTime, @Param("reserved") boolean reserved,
                                    @Param("row") Integer row);
 
+    List<Ticket> findAllByShowTimeAndDeletedFalse(ShowTime showTime);
+
 }

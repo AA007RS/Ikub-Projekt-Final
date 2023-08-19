@@ -27,4 +27,9 @@ public class TicketController {
         ticketService.disableTicket(id);
         return ResponseEntity.ok(String.format("Ticket with id %s disabled!",id));
     }
+
+    @GetMapping("/customer/byShowtime/{id}/all")
+    public ResponseEntity <List<TicketDTO>> filterTicketsPerShowTimeCustomer(@PathVariable("id") Integer showTimeId){
+        return ResponseEntity.ok(ticketService.retrieveAllByShowtime(showTimeId));
+    }
 }

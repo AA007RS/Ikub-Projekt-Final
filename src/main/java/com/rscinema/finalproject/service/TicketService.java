@@ -13,4 +13,6 @@ public interface TicketService {
 
     void disableTicket(Integer id);
 
+    List<TicketDTO> retrieveAllByShowtime(Integer showTimeId);
+
 }
