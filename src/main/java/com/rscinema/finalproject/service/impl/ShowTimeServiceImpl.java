@@ -167,7 +167,7 @@ public class ShowTimeServiceImpl implements ShowTimeService {
         for (ShowTime sh : expired) {
             sh.setFinished(true);
             System.out.printf(
-                    "Set value finished true for showtime with id %s!%n",sh.getId()
+                    "Set value finished true for showtime with id %s!%n", sh.getId()
             );
         }
         showTimeRepository.saveAll(expired);
@@ -196,7 +196,7 @@ public class ShowTimeServiceImpl implements ShowTimeService {
                 throw new HourConfusion("Not available date!");
             }
         }
-        return showTimeRepository.searchCustomerView(movie,LocalTime.from(LocalDateTime.now()),date)
+        return showTimeRepository.searchCustomerView(movie, LocalTime.from(LocalDateTime.now()), date)
                 .stream()
                 .map(sht -> ShowTimeCustomerDTO.builder()
                         .id(sht.getId())
@@ -224,7 +224,7 @@ public class ShowTimeServiceImpl implements ShowTimeService {
     public List<ShowTimeDTO> findByRoomId(Integer id) {
         Room room = roomRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException(String.format(
-                        "Room with id %s not found!",id
+                        "Room with id %s not found!", id
                 )));
         return showTimeRepository.findByDeletedIsFalseAndFinishedIsFalseAndRoom(room).stream()
                 .map(ShowTimeMapper::toDTO)

@@ -27,9 +27,6 @@ public class Payment extends BaseEntity<Integer> {
     @Column(name = "amount")
     private Double amount;
 
-    @Column(name = "transaction_id")
-    private String transactionId;
-
     @OneToOne(mappedBy = "payment",cascade = {CascadeType.DETACH,CascadeType.REFRESH})
     private Order order;
 

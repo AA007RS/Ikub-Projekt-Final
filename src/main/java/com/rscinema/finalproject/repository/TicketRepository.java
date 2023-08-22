@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TicketRepository extends JpaRepository<Ticket, Integer> {
     @Modifying
@@ -26,4 +27,5 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
 
     List<Ticket> findAllByShowTimeAndDeletedFalseAndShowTime_FinishedIsFalse(ShowTime showTime);
 
+    Optional<Ticket> findByIdAndReservedIsFalse(Integer id);
 }

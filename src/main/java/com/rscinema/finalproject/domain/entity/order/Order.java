@@ -34,13 +34,11 @@ public class Order extends BaseEntity<Integer> {
     @Column(name = "total_price")
     private Double totalPrice;
 
-    @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE,
-            CascadeType.REFRESH, CascadeType.PERSIST},fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name = "payment_id", referencedColumnName = "id",unique = true)
     private Payment payment;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "order_status")
-    private OrderStatus orderStatus;
+    @Column(name = "closed")
+    private Boolean closed;
 
 }

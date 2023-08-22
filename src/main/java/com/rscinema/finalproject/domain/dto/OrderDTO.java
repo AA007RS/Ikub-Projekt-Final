@@ -16,6 +16,6 @@ public class OrderDTO {
     private Integer userId;
     private List<TicketDTO> ticketDTOList;
     private String totalPrice;
-    private PaymentDTO paymentDTO;
-    private String orderStatus;
+    private Integer payment;
+    private Boolean closed;
 }
