@@ -27,7 +27,6 @@ public class UserController {
     }
     @PutMapping("/update-details/{id}")
     public ResponseEntity<UserDTO> updateUserDetails(
-
             @PathVariable("id") Integer id,
             @Valid @RequestBody RegistrationDetailsDTO dto
     ) {

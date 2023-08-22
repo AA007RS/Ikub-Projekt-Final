@@ -1,6 +1,5 @@
 package com.rscinema.finalproject.configuration;
 
-import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.rscinema.finalproject.domain.entity.user.Role;
 import org.springframework.beans.factory.annotation.Value;

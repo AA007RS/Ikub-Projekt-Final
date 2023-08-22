@@ -17,4 +17,5 @@ public class ShowTimeSearchDTO {
     private LocalDate endDate;
     private LocalTime endTime;
     private Boolean deleted;
+    private Boolean finished;
 }

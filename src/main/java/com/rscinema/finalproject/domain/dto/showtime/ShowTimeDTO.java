@@ -20,4 +20,5 @@ public class ShowTimeDTO {
     private LocalTime endTime;
     private LocalTime readyForNextTime;
     private Double price;
+    private Boolean finished;
 }

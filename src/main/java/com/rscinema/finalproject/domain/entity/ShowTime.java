@@ -52,6 +52,9 @@ public class ShowTime extends BaseEntity<Integer> {
     @Column(name = "price")
     private Double price;
 
+    @Column(name="finshed")
+    private Boolean finished;
+
     @OneToMany(mappedBy = "showTime", cascade = CascadeType.ALL)
     private List<Ticket> tickets;
 }

@@ -53,7 +53,7 @@ public class TicketServiceImpl implements TicketService {
                         "Showtime with id %s not found!",showTimeId
                 )));
 
-        return ticketRepository.findAllByShowTimeAndDeletedFalse(showTime).stream()
+        return ticketRepository.findAllByShowTimeAndDeletedFalseAndShowTime_FinishedIsFalse(showTime).stream()
                 .map(TicketMapper::toDTO)
                 .toList();
     }

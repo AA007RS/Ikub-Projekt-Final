@@ -20,8 +20,9 @@ public class Payment extends BaseEntity<Integer> {
     @Column(name = "id")
     private Integer id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "payment_method")
-    private String paymentMethod;
+    private PaymentMethod paymentMethod;
 
     @Column(name = "amount")
     private Double amount;

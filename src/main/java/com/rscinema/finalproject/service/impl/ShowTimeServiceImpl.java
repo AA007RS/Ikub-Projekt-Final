@@ -113,10 +113,8 @@ public class ShowTimeServiceImpl implements ShowTimeService {
 
     @Override
     public List<ShowTimeDTO> search(ShowTimeSearchDTO dto) {
-        System.out.println(dto.getMovieId());
-
         return showTimeRepository.searchShowTimes(dto.getMovieId(), dto.getRoomId(), dto.getStartDate()
-                        , dto.getStartTime(), dto.getEndDate(), dto.getEndTime(), dto.getDeleted()).stream()
+                        , dto.getStartTime(), dto.getEndDate(), dto.getEndTime(), dto.getDeleted(), dto.getFinished()).stream()
                 .map(ShowTimeMapper::toDTO)
                 .toList();
     }
@@ -160,18 +158,19 @@ public class ShowTimeServiceImpl implements ShowTimeService {
     @Transactional
     public void expire() {
         System.out.println("REFRESH...");
-        List<ShowTime> expired = showTimeRepository.findByDeletedFalseAndReadyForNextTimeLessThan(
+        List<ShowTime> expired = showTimeRepository.findByDeletedFalseAndFinishedFalseAndReadyForNextTimeLessThan(
                 LocalDateTime.now()
         );
         if (expired.isEmpty()) {
             return;
         }
         for (ShowTime sh : expired) {
-            ticketRepository.updateFromExpiredShowtime(sh.getId());
-            sh.setDeleted(true);
-            showTimeRepository.save(sh);
+            sh.setFinished(true);
+            System.out.printf(
+                    "Set value finished true for showtime with id %s!%n",sh.getId()
+            );
         }
-
+        showTimeRepository.saveAll(expired);
     }
 
     @Override
@@ -216,7 +215,7 @@ public class ShowTimeServiceImpl implements ShowTimeService {
                 .orElseThrow(() -> new ResourceNotFoundException(String.format(
                         "Movie with id %s not found!", id
                 )));
-        return showTimeRepository.findByDeletedIsFalseAndMovie(movie).stream()
+        return showTimeRepository.findByDeletedIsFalseAndFinishedIsFalseAndMovie(movie).stream()
                 .map(ShowTimeMapper::toDTO)
                 .toList();
     }
@@ -227,7 +226,7 @@ public class ShowTimeServiceImpl implements ShowTimeService {
                 () -> new ResourceNotFoundException(String.format(
                         "Room with id %s not found!",id
                 )));
-        return showTimeRepository.findByDeletedIsFalseAndRoom(room).stream()
+        return showTimeRepository.findByDeletedIsFalseAndFinishedIsFalseAndRoom(room).stream()
                 .map(ShowTimeMapper::toDTO)
                 .toList();
 
@@ -239,7 +238,7 @@ public class ShowTimeServiceImpl implements ShowTimeService {
                 .orElseThrow(() -> new ResourceNotFoundException(String.format(
                         "Movie with id %s not found!", id
                 )));
-        return showTimeRepository.findByDeletedIsFalseAndMovie(movie).stream()
+        return showTimeRepository.findByDeletedIsFalseAndFinishedIsFalseAndMovie(movie).stream()
                 .map(sh -> ShowTimeCustomerDTO.builder()
                         .id(sh.getId())
                         .movie(sh.getMovie().getTitle())

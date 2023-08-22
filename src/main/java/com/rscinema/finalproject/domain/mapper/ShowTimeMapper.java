@@ -20,6 +20,7 @@ public class ShowTimeMapper {
                 .endTime(showTime.getEndTime())
                 .readyForNextTime(showTime.getReadyForNextTime().toLocalTime())
                 .price(showTime.getPrice())
+                .finished(showTime.getFinished())
                 .build();
     }
 
@@ -29,6 +30,7 @@ public class ShowTimeMapper {
                 .startDate(dto.getStartDate())
                 .startTime(dto.getStartTime())
                 .price(dto.getPrice())
+                .finished(false)
                 .build();
     }
 

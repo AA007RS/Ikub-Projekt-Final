@@ -25,26 +25,28 @@ public interface ShowTimeRepository extends JpaRepository<ShowTime, Integer> {
             "(:startTime IS NULL OR sht.startTime = :startTime) AND " +
             "(:endDate IS NULL OR sht.endDate = :endDate) AND " +
             "(:endTime IS NULL OR sht.endTime = :endTime) AND " +
-            "(:deleted IS NULL OR sht.deleted = :deleted) ")
+            "(:deleted IS NULL OR sht.deleted = :deleted) AND " +
+            "(:finished IS NULL OR sht.finished = :finished)")
     List<ShowTime> searchShowTimes(@Param("movie") Integer movie, @Param("room") Integer room,
                                    @Param("startDate") LocalDate startDate, @Param("startTime") LocalTime startTime,
                                    @Param("endDate") LocalDate endDate, @Param("endTime") LocalTime endTime,
-                                   @Param("deleted") Boolean deleted);
+                                   @Param("deleted") Boolean deleted, @Param("finished") Boolean finished);
 
     List<ShowTime> findByRoomAndStartDateAndDeletedIsFalseOrderByStartDateAscStartTimeAsc(Room room, LocalDate date);
 
     Optional<ShowTime> findByIdAndDeletedIsFalse(Integer id);
 
-    List<ShowTime> findByDeletedIsFalseAndMovie(Movie movie);
+    List<ShowTime> findByDeletedIsFalseAndFinishedIsFalseAndMovie(Movie movie);
 
-    List<ShowTime> findByDeletedIsFalseAndRoom(Room room);
+    List<ShowTime> findByDeletedIsFalseAndFinishedIsFalseAndRoom(Room room);
 
-    List<ShowTime> findByDeletedFalseAndReadyForNextTimeLessThan(LocalDateTime dateTime);
+    List<ShowTime> findByDeletedFalseAndFinishedFalseAndReadyForNextTimeLessThan(LocalDateTime dateTime);
 
     @Query("SELECT sh FROM ShowTime sh WHERE " +
             "(sh.movie.title ILIKE concat(:movieTitle,'%') OR :movieTitle IS NULL) AND" +
             "(sh.startDate = :date OR :date IS NULL) AND " +
             "sh.deleted = false AND " +
+            "sh.finished = false AND " +
             "sh.startTime > :startTime " +
             "ORDER BY sh.startDate ASC," +
             "sh.movie.title ASC")
