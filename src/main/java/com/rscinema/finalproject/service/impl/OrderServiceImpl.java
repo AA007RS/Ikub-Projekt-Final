@@ -13,9 +13,14 @@ import com.rscinema.finalproject.repository.TicketRepository;
 import com.rscinema.finalproject.repository.UserRepository;
 import com.rscinema.finalproject.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -34,6 +39,20 @@ public class OrderServiceImpl implements OrderService {
         ));
     }
 
+    // heq biletat qe i ka kaluar afati nga orderat aktiv te pambyllur
+    @Scheduled(fixedRate = 300000)
+    public void removeExpiredTicketsFromNonClosedOrders(){
+        LocalDateTime now = LocalDateTime.now();
+        List<Ticket> expiredTickets = ticketRepository.findAllExpiredReservedTickets(LocalDate.from(now),
+                LocalTime.from(now));
+        for(Ticket t: expiredTickets){
+            t.getOrder().setTotalPrice(t.getOrder().getTotalPrice()-t.getShowTime().getPrice());
+            t.setOrder(null);
+            t.setReserved(false);
+        }
+        ticketRepository.saveAll(expiredTickets);
+    }
+
     @Override
     public OrderDTO addTicket(Integer ticketId) {
 
@@ -44,7 +63,7 @@ public class OrderServiceImpl implements OrderService {
                         "Ticket with id %s already reserved!",ticketId
                 )));
         Order order = null;
-
+        // nese ska order aktiv krijo nje te ri
         if(orderRepository.findByUserAndClosedIsFalse(loggedUser).isEmpty()){
             order = new Order();
             order.setUser(loggedUser);
@@ -55,7 +74,7 @@ public class OrderServiceImpl implements OrderService {
             payment.setOrder(order);
             order.setPayment(payment);
             order.setClosed(false);
-
+        // nese ka aktiv, shtoje aty
         }else {
             order = orderRepository.findByUserAndClosedIsFalse(loggedUser).orElseThrow(
                     ()-> new ResourceNotFoundException(
@@ -88,9 +107,11 @@ public class OrderServiceImpl implements OrderService {
                 )));
         toRemove.setOrder(null);
         toRemove.setReserved(false);
+        // nese orderi ska asnje item, fshije fare
         if(order.getTotalPrice()-toRemove.getShowTime().getPrice()==0){
             orderRepository.delete(order);
             return null;
+            //perndryshe uli cmimin
         }else{
             order.setTotalPrice(order.getTotalPrice()-toRemove.getShowTime().getPrice());
         }

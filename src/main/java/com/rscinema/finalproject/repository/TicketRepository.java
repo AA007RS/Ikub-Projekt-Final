@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,4 +30,11 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
     List<Ticket> findAllByShowTimeAndDeletedFalseAndShowTime_FinishedIsFalse(ShowTime showTime);
 
     Optional<Ticket> findByIdAndReservedIsFalse(Integer id);
+
+    @Query("SELECT t from Ticket t WHERE " +
+            "t.deleted = false AND t.reserved is true AND " +
+            "t.showTime.startDate < :startDate AND " +
+            "t.showTime.startTime < :startTime")
+    List<Ticket> findAllExpiredReservedTickets(@Param("startDate") LocalDate startDate,
+                                               @Param("startTime") LocalTime startTime);
 }
