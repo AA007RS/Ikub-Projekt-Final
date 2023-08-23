@@ -31,10 +31,13 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
 
     Optional<Ticket> findByIdAndReservedIsFalse(Integer id);
 
-    @Query("SELECT t from Ticket t WHERE " +
-            "t.deleted = false AND t.reserved is true AND " +
-            "t.showTime.startDate < :startDate AND " +
-            "t.showTime.startTime < :startTime")
-    List<Ticket> findAllExpiredReservedTickets(@Param("startDate") LocalDate startDate,
-                                               @Param("startTime") LocalTime startTime);
+//    @Query("SELECT t from Ticket t WHERE " +
+//            "t.showTime.startDate < :startDate AND " +
+//            "t.showTime.startTime < :startTime AND "+
+//            "t.deleted = false AND t.reserved is true"
+//            )
+//    List<Ticket> findAllExpiredReservedTickets(@Param("startDate") LocalDate startDate,
+//                                               @Param("startTime") LocalTime startTime);
+    List<Ticket> findAllByShowTime_StartDateBeforeAndShowTime_StartTimeBeforeAndDeletedIsFalseAndReservedIsTrue(LocalDate date,
+                                                                                                                LocalTime time);
 }
