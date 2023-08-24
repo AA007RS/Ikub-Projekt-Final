@@ -11,11 +11,11 @@ import com.rscinema.finalproject.domain.exception.ResourceNotFoundException;
 import com.rscinema.finalproject.domain.mapper.OrderMapper;
 import com.rscinema.finalproject.domain.mapper.PaymentMapper;
 import com.rscinema.finalproject.repository.OrderRepository;
+import com.rscinema.finalproject.repository.PaymentRepository;
 import com.rscinema.finalproject.repository.TicketRepository;
 import com.rscinema.finalproject.repository.UserRepository;
 import com.rscinema.finalproject.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cglib.core.Local;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +32,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final TicketRepository ticketRepository;
     private final UserRepository userRepository;
+    private final PaymentRepository paymentRepository;
 
     @Override
     public OrderDTO findById(Integer id) {
@@ -49,6 +50,16 @@ public class OrderServiceImpl implements OrderService {
         for (Ticket t : expiredTickets) {
             System.out.println("Ticket with id "+ t.getId() +" removed from order with id "+t.getOrder().getId());
             t.getOrder().setTotalPrice(t.getOrder().getTotalPrice() - t.getShowTime().getPrice());
+            if (t.getOrder().getTotalPrice()==0){
+                t.getOrder().setDeleted(true);
+                System.out.println("Order with id "+t.getOrder().getId()+" soft deleted");
+
+                t.getOrder().getPayment().setDeleted(true);
+                System.out.println("Payment with id "+t.getOrder().getPayment().getId()+" soft deleted");
+                paymentRepository.save(t.getOrder().getPayment());
+
+            }
+            orderRepository.save(t.getOrder());
             t.setOrder(null);
             t.setReserved(false);
         }
@@ -171,7 +182,7 @@ public class OrderServiceImpl implements OrderService {
         } else if (to!=null) {
             to2 = LocalDateTime.of(to,LocalTime.parse("23:59"));
         }
-        
+
         return orderRepository.findFromToDate(from2,to2)
                 .stream()
                 .map(OrderMapper::toDTO)

@@ -31,7 +31,7 @@ public class Ticket extends BaseEntity<Integer> {
     @Column(name = "reserved")
     private boolean reserved;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "order_id", referencedColumnName = "id")
     private Order order;
 

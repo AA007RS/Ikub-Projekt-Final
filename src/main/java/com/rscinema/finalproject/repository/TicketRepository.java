@@ -33,7 +33,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
 
 
     @Query("SELECT t from Ticket t WHERE " +
-            "t.showTime.startDate < :startDate AND " +
+            "t.showTime.startDate <= :startDate AND " +
             "t.showTime.startTime < :startTime AND " +
             "t.order.closed = false AND "+
             "t.deleted = false AND t.reserved = true"
