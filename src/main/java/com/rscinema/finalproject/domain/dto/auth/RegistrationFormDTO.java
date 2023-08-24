@@ -29,6 +29,9 @@ public class RegistrationFormDTO {
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>]).{8,20}$", message = "Password not valid")
     private String password;
 
+    @NotNull(message = "Re-confirm password field must be filled!")
+    private String reConfirmPassword;
+
     @NotNull(message = "Age field must be filled")
     @Min(value = 18, message = "Users must be 18 years old and above!")
     private Integer age;
