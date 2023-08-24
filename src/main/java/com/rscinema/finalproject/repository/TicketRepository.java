@@ -2,6 +2,7 @@ package com.rscinema.finalproject.repository;
 
 import com.rscinema.finalproject.domain.entity.ShowTime;
 import com.rscinema.finalproject.domain.entity.Ticket;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -31,13 +32,15 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
 
     Optional<Ticket> findByIdAndReservedIsFalse(Integer id);
 
-//    @Query("SELECT t from Ticket t WHERE " +
-//            "t.showTime.startDate < :startDate AND " +
-//            "t.showTime.startTime < :startTime AND "+
-//            "t.deleted = false AND t.reserved is true"
-//            )
-//    List<Ticket> findAllExpiredReservedTickets(@Param("startDate") LocalDate startDate,
-//                                               @Param("startTime") LocalTime startTime);
-    List<Ticket> findAllByShowTime_StartDateBeforeAndShowTime_StartTimeBeforeAndDeletedIsFalseAndReservedIsTrue(LocalDate date,
-                                                                                                                LocalTime time);
+
+    @Query("SELECT t from Ticket t WHERE " +
+            "t.showTime.startDate < :startDate AND " +
+            "t.showTime.startTime < :startTime AND " +
+            "t.order.closed = false AND "+
+            "t.deleted = false AND t.reserved = true"
+            )
+    List<Ticket> findAllExpiredReservedTickets(@Param("startDate") LocalDate startDate,
+                                               @Param("startTime") LocalTime startTime);
+
+
 }

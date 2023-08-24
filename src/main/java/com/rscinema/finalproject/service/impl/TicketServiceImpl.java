@@ -57,4 +57,9 @@ public class TicketServiceImpl implements TicketService {
                 .map(TicketMapper::toDTO)
                 .toList();
     }
+
+    @Override
+    public List<TicketDTO> viewMyTickets() {
+        return null;
+    }
 }

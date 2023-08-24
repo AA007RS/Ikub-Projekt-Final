@@ -14,6 +14,7 @@ import com.rscinema.finalproject.repository.OrderRepository;
 import com.rscinema.finalproject.repository.TicketRepository;
 import com.rscinema.finalproject.repository.UserRepository;
 import com.rscinema.finalproject.service.OrderService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -44,10 +45,9 @@ public class OrderServiceImpl implements OrderService {
     public void removeExpiredTicketsFromNonClosedOrders() {
         LocalDateTime now = LocalDateTime.now();
         List<Ticket> expiredTickets = ticketRepository
-                .findAllByShowTime_StartDateBeforeAndShowTime_StartTimeBeforeAndDeletedIsFalseAndReservedIsTrue(
-                        LocalDate.from(now), LocalTime.from(now)
-                );
+                .findAllExpiredReservedTickets(LocalDate.from(now), LocalTime.from(now));
         for (Ticket t : expiredTickets) {
+            System.out.println("Ticket with id "+ t.getId() +" removed from order with id "+t.getOrder().getId());
             t.getOrder().setTotalPrice(t.getOrder().getTotalPrice() - t.getShowTime().getPrice());
             t.setOrder(null);
             t.setReserved(false);
@@ -140,6 +140,9 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         String.format("Order with id %s not found!", orderId)
                 ));
+        if (order.getClosed()){
+            throw new ResourceNotFoundException("Order already paid!");
+        }
         if (dto.getAmount() < order.getTotalPrice()) {
             throw new ResourceNotFoundException("Insufficient balance!");
         }

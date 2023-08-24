@@ -24,14 +24,14 @@ public class Ticket extends BaseEntity<Integer> {
     @Column(name = "seat_num")
     private Integer seatNumber;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinColumn(name = "showtime_id", referencedColumnName = "id")
     private ShowTime showTime;
 
     @Column(name = "reserved")
     private boolean reserved;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.DETACH})
+    @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.EAGER)
     @JoinColumn(name = "order_id", referencedColumnName = "id")
     private Order order;
 

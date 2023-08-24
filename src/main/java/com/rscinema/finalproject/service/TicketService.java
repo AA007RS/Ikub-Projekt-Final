@@ -15,4 +15,6 @@ public interface TicketService {
 
     List<TicketDTO> retrieveAllByShowtime(Integer showTimeId);
 
+    List<TicketDTO> viewMyTickets();
+
 }
