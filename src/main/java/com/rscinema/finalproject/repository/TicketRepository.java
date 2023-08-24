@@ -2,7 +2,6 @@ package com.rscinema.finalproject.repository;
 
 import com.rscinema.finalproject.domain.entity.ShowTime;
 import com.rscinema.finalproject.domain.entity.Ticket;
-import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -30,7 +29,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
 
     List<Ticket> findAllByShowTimeAndDeletedFalseAndShowTime_FinishedIsFalse(ShowTime showTime);
 
-    Optional<Ticket> findByIdAndReservedIsFalse(Integer id);
+    Optional<Ticket> findByIdAndReservedIsFalseAndDeletedIsFalse(Integer id);
 
 
     @Query("SELECT t from Ticket t WHERE " +
@@ -43,4 +42,5 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
                                                @Param("startTime") LocalTime startTime);
 
 
+    List<Ticket> findAllByOrder_User_IdAndShowTime_FinishedIsFalse(Integer userId);
 }

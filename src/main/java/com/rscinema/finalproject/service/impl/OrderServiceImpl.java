@@ -14,7 +14,6 @@ import com.rscinema.finalproject.repository.OrderRepository;
 import com.rscinema.finalproject.repository.TicketRepository;
 import com.rscinema.finalproject.repository.UserRepository;
 import com.rscinema.finalproject.service.OrderService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -60,7 +59,7 @@ public class OrderServiceImpl implements OrderService {
 
         User loggedUser = userRepository.findById(SecurityUtils.getLoggedUserId()).orElseThrow(
                 () -> new ResourceNotFoundException("User not found"));
-        Ticket toAdd = ticketRepository.findByIdAndReservedIsFalse(ticketId).orElseThrow(
+        Ticket toAdd = ticketRepository.findByIdAndReservedIsFalseAndDeletedIsFalse(ticketId).orElseThrow(
                 () -> new ResourceNotFoundException(String.format(
                         "Ticket with id %s already reserved!", ticketId
                 )));

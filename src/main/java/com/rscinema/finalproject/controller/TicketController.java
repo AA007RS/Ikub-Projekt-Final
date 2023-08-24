@@ -22,7 +22,7 @@ public class TicketController {
         return ResponseEntity.ok(ticketService.watchAndFilterTicketsOfShowTimeAdmin(showTimeId, reserved, row));
     }
 
-    @GetMapping("/admin/{id}")
+    @PutMapping("/admin/{id}")
     public ResponseEntity<String> disableTicket(@PathVariable("id")Integer id){
         ticketService.disableTicket(id);
         return ResponseEntity.ok(String.format("Ticket with id %s disabled!",id));
@@ -31,5 +31,10 @@ public class TicketController {
     @GetMapping("/customer/byShowtime/{id}/all")
     public ResponseEntity <List<TicketDTO>> filterTicketsPerShowTimeCustomer(@PathVariable("id") Integer showTimeId){
         return ResponseEntity.ok(ticketService.retrieveAllByShowtime(showTimeId));
+    }
+
+    @GetMapping("/customer/view-my-tickets")
+    public ResponseEntity<List<TicketDTO>> viewMyActiveTickets(){
+        return ResponseEntity.ok(ticketService.viewMyTickets());
     }
 }

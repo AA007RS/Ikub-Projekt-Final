@@ -1,5 +1,6 @@
 package com.rscinema.finalproject.service.impl;
 
+import com.rscinema.finalproject.configuration.SecurityUtils;
 import com.rscinema.finalproject.domain.dto.ticket.TicketDTO;
 import com.rscinema.finalproject.domain.entity.ShowTime;
 import com.rscinema.finalproject.domain.entity.Ticket;
@@ -11,6 +12,7 @@ import com.rscinema.finalproject.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.security.Security;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -60,6 +62,9 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public List<TicketDTO> viewMyTickets() {
-        return null;
+        return ticketRepository.findAllByOrder_User_IdAndShowTime_FinishedIsFalse(SecurityUtils.getLoggedUserId())
+                .stream()
+                .map(TicketMapper::toDTO)
+                .toList();
     }
 }
