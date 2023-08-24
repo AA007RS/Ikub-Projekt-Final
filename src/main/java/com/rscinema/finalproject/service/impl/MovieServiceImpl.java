@@ -97,12 +97,6 @@ public class MovieServiceImpl implements MovieService {
         toDelete.setDeleted(true);
         movieRepository.save(toDelete);
     }
-    //admini
-    @Override
-    public void hardDelete(Integer id) {
-        Movie toDelete = findById(id);
-        movieRepository.delete(toDelete);
-    }
 
     //admini
     @Override

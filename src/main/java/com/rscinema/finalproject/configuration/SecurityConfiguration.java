@@ -64,17 +64,21 @@ public class SecurityConfiguration {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "api/user/register").permitAll()
-                        .requestMatchers("/api/order/customer/**")
-                        .hasAuthority("ROLE_".concat(Role.CUSTOMER.getValue()))
-                        .requestMatchers("/api/admin/**",
-                                "/api/genres/**",
-                                "/api/movies/**",
-                                "/api/rooms/**",
-                                "/api/showtimes/**",
-                                "/api/tickets/",
+                        .requestMatchers("/auth/**", "api/users/register").permitAll()
+                        .requestMatchers("/api/users/customer/**",
+                                "/api/movies/customer",
+                                "/api/showtimes/customer/**",
+                                "/api/tickets/customer/**",
+                                "/api/order/customer/**")
+                                                            .hasAuthority("ROLE_".concat(Role.CUSTOMER.getValue()))
+                        .requestMatchers("/api/users/admin/**",
+                                "/api/genres/admin/**",
+                                "/api/movies/admin/**",
+                                "/api/rooms/admin/**",
+                                "/api/showtimes/admin/**",
+                                "/api/tickets/admin/**",
                                 "/api/order/admin/**")
-                        .hasAuthority("ROLE_".concat(Role.ADMIN.getValue()))
+                                                        .hasAuthority("ROLE_".concat(Role.ADMIN.getValue()))
                         .anyRequest().authenticated()
                 )
                 .httpBasic(withDefaults()).

@@ -20,23 +20,23 @@ public class MovieController {
 
     private final MovieService movieService;
 
-    @PostMapping()
+    @PostMapping("/admin")
     public ResponseEntity<MovieDTO> create(@RequestBody MovieDTO movieDTO) {
         return ResponseEntity.ok(movieService.create(movieDTO));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/admin/{id}")
     public ResponseEntity<MovieDTO> findById(@PathVariable("id") Integer id) {
         Movie toReturn = movieService.findById(id);
         return ResponseEntity.ok(MovieMapper.toDTO(toReturn));
     }
 
-    @GetMapping("/existing/{id}")
+    @GetMapping("/customer/existing/{id}")
     public ResponseEntity<MovieDTO> findExistingById(@PathVariable("id")Integer id){
         return ResponseEntity.ok(movieService.findExistingById(id));
     }
 
-    @GetMapping()
+    @GetMapping("/admin")
     public ResponseEntity<List<MovieDTO>> findAll() {
         return ResponseEntity.ok(movieService.findAll());
     }
@@ -46,7 +46,7 @@ public class MovieController {
         return ResponseEntity.ok(movieService.searchMoviesAdmin(dto));
     }
 
-    @GetMapping("/user/search")
+    @GetMapping("/customer/search")
     public ResponseEntity<List<MovieDTO>> searchWithCustomer(@RequestParam String title){
         return ResponseEntity.ok(movieService.searchMoviesUser(title));
     }
@@ -55,31 +55,25 @@ public class MovieController {
     public ResponseEntity<List<MovieDTO>> findAllExistingByGenreId(@PathVariable("id") Integer id){
         return ResponseEntity.ok(movieService.findAllExistingByGenreId(id));
     }
-    @PutMapping("/update/{id}")
+    @PutMapping("/admin/update/{id}")
     public ResponseEntity<MovieDTO> update(@PathVariable("id") Integer id,
                                            @RequestBody MovieDTO movieDTO) {
         return ResponseEntity.ok(movieService.update(id,movieDTO));
     }
 
-    @PutMapping("/sd/{id}")
+    @PutMapping("/admin/sd/{id}")
     public ResponseEntity<String> softDelete(@PathVariable("id") Integer id) {
         movieService.softDelete(id);
         return new ResponseEntity<>(String.format("Movie with id %s is soft deleted!", id),
                 HttpStatus.OK);
     }
 
-    @PutMapping("/restore/{id}")
+    @PutMapping("/admin/restore/{id}")
     public ResponseEntity<String> restore(@PathVariable("id")Integer id){
         movieService.restore(id);
         return new ResponseEntity<>(String.format("Movie with id %s is restored!",id),
                 HttpStatus.OK);
     }
 
-    @DeleteMapping("/hd/{id}")
-    public ResponseEntity<String> hardDelete(@PathVariable("id") Integer id) {
-        movieService.hardDelete(id);
-        return new ResponseEntity<>(String.format("Movie with id %s hardly deleted!", id),
-                HttpStatus.OK);
-    }
 
 }

@@ -4,6 +4,8 @@ import com.rscinema.finalproject.domain.dto.user.UserDTO;
 import com.rscinema.finalproject.domain.dto.user.RegistrationDetailsDTO;
 import com.rscinema.finalproject.domain.dto.auth.RegistrationFormDTO;
 import com.rscinema.finalproject.domain.dto.password.ChangePasswordFormDTO;
+import com.rscinema.finalproject.domain.dto.user.UserSearchDTO;
+import com.rscinema.finalproject.domain.entity.user.User;
 import com.rscinema.finalproject.domain.mapper.UserMapper;
 import com.rscinema.finalproject.service.UserService;
 import jakarta.validation.Valid;
@@ -14,9 +16,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 public class UserController {
     private final UserService userService;
 
@@ -49,10 +53,29 @@ public class UserController {
         return ResponseEntity.ok(userService.seeUserDetails(id));
     }
 
-    @PreAuthorize("hasRole('ROLE_CUSTOMER')")
     @PutMapping("/deleteAccount/{id}")
     public ResponseEntity<String> deleteAccount(@PathVariable("id")Integer id){
         return ResponseEntity.ok(userService.deleteAccount(id));
+    }
+
+    @GetMapping("admin/customers/{id}")
+    public ResponseEntity<User> findUserById(@PathVariable("id") Integer id) {
+        return ResponseEntity.ok(userService.findUserById(id));
+    }
+
+    @GetMapping("admin/customers/deleted")
+    public ResponseEntity<List<UserDTO>> findAllDeletedCustomers(){
+        return ResponseEntity.ok(userService.findAllDeletedCustomers());
+    }
+
+    @GetMapping("admin/customers/search")
+    public ResponseEntity<List<UserDTO>> search( @RequestBody UserSearchDTO dto){
+        return ResponseEntity.ok(userService.search(dto));
+    }
+
+    @PutMapping("admin/customers/reset-password/{id}")
+    public ResponseEntity<String> resetPasswordForUser(@PathVariable("id") Integer id){
+        return ResponseEntity.ok(userService.setPasswordDefault(id));
     }
 
 }

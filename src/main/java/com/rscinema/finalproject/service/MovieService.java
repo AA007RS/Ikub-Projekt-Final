@@ -17,6 +17,5 @@ public interface MovieService {
     List<MovieDTO> searchMoviesUser(String name);
     MovieDTO update(Integer id,MovieDTO movieDTO);
     void softDelete(Integer id);
-    void hardDelete(Integer id);
     void restore(Integer id);
 }

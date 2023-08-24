@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/rooms")
+@RequestMapping("/api/rooms/admin")
 public class RoomController {
     private final RoomService roomService;
 
@@ -30,7 +30,7 @@ public class RoomController {
         return ResponseEntity.ok(RoomMapper.toDTO(room));
     }
 
-    @GetMapping("/admin/search")
+    @GetMapping("/search")
     public ResponseEntity<List<RoomDTO>> search(@RequestBody RoomSearchDTO dto){
         return ResponseEntity.ok(roomService.searchRoom(dto));
     }

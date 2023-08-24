@@ -145,7 +145,6 @@ public class UserServiceImpl implements UserService {
     }
 
     //changes password for another user
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Override
     public String setPasswordDefault(Integer id) {
         User user = findUserById(id);
@@ -154,7 +153,6 @@ public class UserServiceImpl implements UserService {
         return "Password reset!";
     }
 
-    @PreAuthorize("hasRole('ROLE_CUSTOMER') or hasRole('ROLE_ADMIN')")
     @Override
     public UserDTO seeUserDetails(Integer id) {
         if (!(Objects.equals(SecurityUtils.getLoggedUserId(), id))) {
