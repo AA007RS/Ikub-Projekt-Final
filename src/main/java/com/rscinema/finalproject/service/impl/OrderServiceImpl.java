@@ -15,6 +15,7 @@ import com.rscinema.finalproject.repository.TicketRepository;
 import com.rscinema.finalproject.repository.UserRepository;
 import com.rscinema.finalproject.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -148,5 +149,32 @@ public class OrderServiceImpl implements OrderService {
         order.setPayment(PaymentMapper.toUpdate(order.getPayment(), dto));
         order.setClosed(true);
         return OrderMapper.toDTO(orderRepository.save(order));
+    }
+
+    @Override
+    public OrderDTO viewOrderByTicketId(Integer ticketId) {
+        Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(
+                () -> new ResourceNotFoundException(String.format(
+                        "Ticket with id %s not found!",ticketId
+                ))
+        );
+        return OrderMapper.toDTO(ticket.getOrder());
+    }
+
+    @Override
+    public List<OrderDTO> viewCompletedOrdersFromTo(LocalDate from, LocalDate to) {
+        LocalDateTime from2 = null;
+        LocalDateTime to2 = null;
+        if (from!=null){
+             from2 = LocalDateTime.of(from,LocalTime.parse("00:00"));
+
+        } else if (to!=null) {
+            to2 = LocalDateTime.of(to,LocalTime.parse("23:59"));
+        }
+        
+        return orderRepository.findFromToDate(from2,to2)
+                .stream()
+                .map(OrderMapper::toDTO)
+                .toList();
     }
 }

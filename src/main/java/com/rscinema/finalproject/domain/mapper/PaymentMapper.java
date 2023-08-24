@@ -12,4 +12,13 @@ public class PaymentMapper {
         e.setAmount(d.getAmount());
         return  e;
     }
+
+    public static PaymentDTO toDTO (Payment entity){
+        return PaymentDTO.builder()
+                .id(entity.getId())
+                .amount(entity.getAmount())
+                .paymentMethod(entity.getPaymentMethod().getValue())
+                .orderId(entity.getOrder().getId())
+                .build();
+    }
 }

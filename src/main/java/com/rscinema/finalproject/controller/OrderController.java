@@ -7,6 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/order")
 @RequiredArgsConstructor
@@ -39,5 +42,15 @@ public class OrderController {
     public ResponseEntity<OrderDTO> pay(@PathVariable("id")Integer orderId,
                                         @RequestBody PaymentDTO dto){
         return ResponseEntity.ok(orderService.pay(orderId,dto));
+    }
+    @GetMapping("/admin/view-order/ticket/{id}")
+    public ResponseEntity<OrderDTO> viewOrderByTicketId(@PathVariable("id")Integer id){
+        return ResponseEntity.ok(orderService.viewOrderByTicketId(id));
+    }
+
+    @GetMapping("/admin/view-orders")
+    public ResponseEntity<List<OrderDTO>> viewOrders(@RequestParam(required = false)LocalDate from,
+                                                     @RequestParam(required = false)LocalDate to){
+        return ResponseEntity.ok(orderService.viewCompletedOrdersFromTo(from,to));
     }
 }

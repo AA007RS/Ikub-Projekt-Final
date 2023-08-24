@@ -12,7 +12,6 @@ import com.rscinema.finalproject.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.security.Security;
 import java.util.List;
 
 @RequiredArgsConstructor

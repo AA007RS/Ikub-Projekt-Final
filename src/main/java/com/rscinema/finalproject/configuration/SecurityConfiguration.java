@@ -72,7 +72,8 @@ public class SecurityConfiguration {
                                 "/api/movies/**",
                                 "/api/rooms/**",
                                 "/api/showtimes/**",
-                                "/api/tickets/")
+                                "/api/tickets/",
+                                "/api/order/admin/**")
                         .hasAuthority("ROLE_".concat(Role.ADMIN.getValue()))
                         .anyRequest().authenticated()
                 )
