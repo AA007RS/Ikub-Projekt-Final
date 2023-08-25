@@ -37,7 +37,9 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDTO findById(Integer id) {
         return OrderMapper.toDTO(orderRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Not found!")
+                () -> new ResourceNotFoundException(String.format(
+                        "Order with id %s not found!",id
+                ))
         ));
     }
 
