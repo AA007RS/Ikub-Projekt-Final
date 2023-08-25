@@ -21,7 +21,7 @@ public class ShowTimeController {
 
     @GetMapping("/admin/{id}")
     public ResponseEntity<ShowTimeDTO> findByIdAdminView(@PathVariable("id")Integer id){
-        return ResponseEntity.ok(ShowTimeMapper.toDTO(showTimeService.findById(id)));
+        return ResponseEntity.ok(ShowTimeMapper.toDTOShowTime(showTimeService.findById(id)));
     }
 
     @GetMapping("/admin/available/byMovie/{id}")

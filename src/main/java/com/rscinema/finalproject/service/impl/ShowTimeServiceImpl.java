@@ -90,7 +90,7 @@ public class ShowTimeServiceImpl implements ShowTimeService {
         }
         toSave.setTickets(tickets);
 
-        return ShowTimeMapper.toDTO(showTimeRepository.save(toSave));
+        return ShowTimeMapper.toDTOShowTime(showTimeRepository.save(toSave));
     }
 
     //util per create
@@ -115,7 +115,7 @@ public class ShowTimeServiceImpl implements ShowTimeService {
     public List<ShowTimeDTO> search(ShowTimeSearchDTO dto) {
         return showTimeRepository.searchShowTimes(dto.getMovieId(), dto.getRoomId(), dto.getStartDate()
                         , dto.getStartTime(), dto.getEndDate(), dto.getEndTime(), dto.getDeleted(), dto.getFinished()).stream()
-                .map(ShowTimeMapper::toDTO)
+                .map(ShowTimeMapper::toDTOShowTime)
                 .toList();
     }
 
@@ -131,7 +131,7 @@ public class ShowTimeServiceImpl implements ShowTimeService {
         calculateEndDateAndTime(showTime);
         checkHourAvailability(showTime);
 
-        return ShowTimeMapper.toDTO(showTimeRepository.save(showTime));
+        return ShowTimeMapper.toDTOShowTime(showTimeRepository.save(showTime));
     }
 
     @Transactional
@@ -179,14 +179,7 @@ public class ShowTimeServiceImpl implements ShowTimeService {
                 .orElseThrow(() -> new ResourceNotFoundException(String.format(
                         "Showtime with id %s not found!", id
                 )));
-        return ShowTimeCustomerDTO.builder()
-                .id(showTime.getId())
-                .movie(showTime.getMovie().getTitle())
-                .room(showTime.getRoom().getName())
-                .startDate(showTime.getStartDate())
-                .startTime(showTime.getStartTime())
-                .endTime(showTime.getEndTime())
-                .build();
+        return ShowTimeMapper.toDTOShowTimeCustomer(showTime);
     }
 
     @Override
@@ -198,14 +191,7 @@ public class ShowTimeServiceImpl implements ShowTimeService {
         }
         return showTimeRepository.searchCustomerView(movie, LocalTime.from(LocalDateTime.now()), date)
                 .stream()
-                .map(sht -> ShowTimeCustomerDTO.builder()
-                        .id(sht.getId())
-                        .movie(sht.getMovie().getTitle())
-                        .room(sht.getRoom().getName())
-                        .startDate(sht.getStartDate())
-                        .startTime(sht.getStartTime())
-                        .endTime(sht.getEndTime())
-                        .build())
+                .map(ShowTimeMapper::toDTOShowTimeCustomer)
                 .toList();
     }
 
@@ -216,7 +202,7 @@ public class ShowTimeServiceImpl implements ShowTimeService {
                         "Movie with id %s not found!", id
                 )));
         return showTimeRepository.findByDeletedIsFalseAndFinishedIsFalseAndMovie(movie).stream()
-                .map(ShowTimeMapper::toDTO)
+                .map(ShowTimeMapper::toDTOShowTime)
                 .toList();
     }
 
@@ -227,7 +213,7 @@ public class ShowTimeServiceImpl implements ShowTimeService {
                         "Room with id %s not found!", id
                 )));
         return showTimeRepository.findByDeletedIsFalseAndFinishedIsFalseAndRoom(room).stream()
-                .map(ShowTimeMapper::toDTO)
+                .map(ShowTimeMapper::toDTOShowTime)
                 .toList();
 
     }
@@ -239,14 +225,7 @@ public class ShowTimeServiceImpl implements ShowTimeService {
                         "Movie with id %s not found!", id
                 )));
         return showTimeRepository.findByDeletedIsFalseAndFinishedIsFalseAndMovie(movie).stream()
-                .map(sh -> ShowTimeCustomerDTO.builder()
-                        .id(sh.getId())
-                        .movie(sh.getMovie().getTitle())
-                        .room(sh.getRoom().getName())
-                        .startDate(sh.getStartDate())
-                        .startTime(sh.getStartTime())
-                        .endTime(sh.getEndTime())
-                        .build())
+                .map(ShowTimeMapper::toDTOShowTimeCustomer)
                 .toList();
     }
 

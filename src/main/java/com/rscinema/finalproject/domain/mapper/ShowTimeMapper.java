@@ -1,14 +1,13 @@
 package com.rscinema.finalproject.domain.mapper;
 
+import com.rscinema.finalproject.domain.dto.showtime.ShowTimeCustomerDTO;
 import com.rscinema.finalproject.domain.dto.showtime.ShowTimeDTO;
 import com.rscinema.finalproject.domain.dto.showtime.UpdateShowTimeDTO;
 import com.rscinema.finalproject.domain.entity.ShowTime;
 
-import java.time.format.DateTimeParseException;
-
 public class ShowTimeMapper {
 
-    public static ShowTimeDTO toDTO(ShowTime showTime){
+    public static ShowTimeDTO toDTOShowTime(ShowTime showTime) {
 
         return ShowTimeDTO.builder()
                 .id(showTime.getId())
@@ -21,6 +20,17 @@ public class ShowTimeMapper {
                 .readyForNextTime(showTime.getReadyForNextTime().toLocalTime())
                 .price(showTime.getPrice())
                 .finished(showTime.getFinished())
+                .build();
+    }
+
+    public static ShowTimeCustomerDTO toDTOShowTimeCustomer(ShowTime showTime){
+        return ShowTimeCustomerDTO.builder()
+                .id(showTime.getId())
+                .movie(showTime.getMovie().getTitle())
+                .room(showTime.getRoom().getName())
+                .startDate(showTime.getStartDate())
+                .startTime(showTime.getStartTime())
+                .endTime(showTime.getEndTime())
                 .build();
     }
 
