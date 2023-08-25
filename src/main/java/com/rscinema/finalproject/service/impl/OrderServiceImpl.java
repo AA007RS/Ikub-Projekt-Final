@@ -16,6 +16,7 @@ import com.rscinema.finalproject.repository.TicketRepository;
 import com.rscinema.finalproject.repository.UserRepository;
 import com.rscinema.finalproject.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
@@ -50,14 +52,14 @@ public class OrderServiceImpl implements OrderService {
         List<Ticket> expiredTickets = ticketRepository
                 .findAllExpiredReservedTickets(LocalDate.from(now), LocalTime.from(now));
         for (Ticket t : expiredTickets) {
-            System.out.println("Ticket with id "+ t.getId() +" removed from order with id "+t.getOrder().getId());
+            log.info("Ticket with id {} removed from order with id {} ",t.getId(),t.getOrder().getId());
             t.getOrder().setTotalPrice(t.getOrder().getTotalPrice() - t.getShowTime().getPrice());
             if (t.getOrder().getTotalPrice()==0){
                 t.getOrder().setDeleted(true);
-                System.out.println("Order with id "+t.getOrder().getId()+" soft deleted");
+                log.info("Order with id {} soft deleted!",t.getOrder().getId());
 
                 t.getOrder().getPayment().setDeleted(true);
-                System.out.println("Payment with id "+t.getOrder().getPayment().getId()+" soft deleted");
+                log.info("Payment with id {} soft deleted!",t.getOrder().getPayment().getId());
                 paymentRepository.save(t.getOrder().getPayment());
 
             }

@@ -16,6 +16,7 @@ import com.rscinema.finalproject.repository.TicketRepository;
 import com.rscinema.finalproject.service.ShowTimeService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ShowTimeServiceImpl implements ShowTimeService {
 
     private final ShowTimeRepository showTimeRepository;
@@ -157,7 +159,7 @@ public class ShowTimeServiceImpl implements ShowTimeService {
     @Scheduled(fixedRate = 300000)
     @Transactional
     public void expire() {
-        System.out.println("REFRESH...");
+        log.info("Checking for expired showtimes...");
         List<ShowTime> expired = showTimeRepository.findByDeletedFalseAndFinishedFalseAndReadyForNextTimeLessThan(
                 LocalDateTime.now()
         );
@@ -166,9 +168,7 @@ public class ShowTimeServiceImpl implements ShowTimeService {
         }
         for (ShowTime sh : expired) {
             sh.setFinished(true);
-            System.out.printf(
-                    "Set value finished true for showtime with id %s!%n", sh.getId()
-            );
+            log.info("Set value finished true for showtime with id {}!", sh.getId());
         }
         showTimeRepository.saveAll(expired);
     }
