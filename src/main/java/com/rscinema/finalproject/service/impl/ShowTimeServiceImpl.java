@@ -1,5 +1,6 @@
 package com.rscinema.finalproject.service.impl;
 
+import com.rscinema.finalproject.aspect.annotation.MeasureTime;
 import com.rscinema.finalproject.domain.dto.showtime.*;
 import com.rscinema.finalproject.domain.entity.Movie;
 import com.rscinema.finalproject.domain.entity.ShowTime;
@@ -38,6 +39,7 @@ public class ShowTimeServiceImpl implements ShowTimeService {
     private final RoomRepository roomRepository;
     private final TicketRepository ticketRepository;
 
+    @MeasureTime
     @Override
     public ShowTimeDTO create(RegisterShowTimeDTO dto) {
         //find existing movie

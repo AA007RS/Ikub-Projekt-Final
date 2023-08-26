@@ -40,7 +40,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderDTO findById(Integer id) {
         return OrderMapper.toDTO(orderRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException(String.format(
-                        "Order with id %s not found!",id
+                        "Order with id %s not found!", id
                 ))
         ));
     }
@@ -52,14 +52,14 @@ public class OrderServiceImpl implements OrderService {
         List<Ticket> expiredTickets = ticketRepository
                 .findAllExpiredReservedTickets(LocalDate.from(now), LocalTime.from(now));
         for (Ticket t : expiredTickets) {
-            log.info("Ticket with id {} removed from order with id {} ",t.getId(),t.getOrder().getId());
+            log.info("Ticket with id {} removed from order with id {} ", t.getId(), t.getOrder().getId());
             t.getOrder().setTotalPrice(t.getOrder().getTotalPrice() - t.getShowTime().getPrice());
-            if (t.getOrder().getTotalPrice()==0){
+            if (t.getOrder().getTotalPrice() == 0) {
                 t.getOrder().setDeleted(true);
-                log.info("Order with id {} soft deleted!",t.getOrder().getId());
+                log.info("Order with id {} soft deleted!", t.getOrder().getId());
 
                 t.getOrder().getPayment().setDeleted(true);
-                log.info("Payment with id {} soft deleted!",t.getOrder().getPayment().getId());
+                log.info("Payment with id {} soft deleted!", t.getOrder().getPayment().getId());
                 paymentRepository.save(t.getOrder().getPayment());
 
             }
@@ -155,7 +155,7 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new ResourceNotFoundException(
                         String.format("Order with id %s not found!", orderId)
                 ));
-        if (order.getClosed()){
+        if (order.getClosed()) {
             throw new ResourceNotFoundException("Order already paid!");
         }
         if (dto.getAmount() < order.getTotalPrice()) {
@@ -170,7 +170,7 @@ public class OrderServiceImpl implements OrderService {
     public OrderDTO viewOrderByTicketId(Integer ticketId) {
         Ticket ticket = ticketRepository.findById(ticketId).orElseThrow(
                 () -> new ResourceNotFoundException(String.format(
-                        "Ticket with id %s not found!",ticketId
+                        "Ticket with id %s not found!", ticketId
                 ))
         );
         return OrderMapper.toDTO(ticket.getOrder());
@@ -180,14 +180,14 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderDTO> viewCompletedOrdersFromTo(LocalDate from, LocalDate to) {
         LocalDateTime from2 = null;
         LocalDateTime to2 = null;
-        if (from!=null){
-             from2 = LocalDateTime.of(from,LocalTime.parse("00:00"));
+        if (from != null) {
+            from2 = LocalDateTime.of(from, LocalTime.parse("00:00"));
 
-        } else if (to!=null) {
-            to2 = LocalDateTime.of(to,LocalTime.parse("23:59"));
+        } else if (to != null) {
+            to2 = LocalDateTime.of(to, LocalTime.parse("23:59"));
         }
 
-        return orderRepository.findFromToDate(from2,to2)
+        return orderRepository.findFromToDate(from2, to2)
                 .stream()
                 .map(OrderMapper::toDTO)
                 .toList();

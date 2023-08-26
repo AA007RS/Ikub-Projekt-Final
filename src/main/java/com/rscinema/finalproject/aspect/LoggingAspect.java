@@ -2,6 +2,7 @@ package com.rscinema.finalproject.aspect;
 
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.context.annotation.Configuration;
 
@@ -47,6 +48,16 @@ public class LoggingAspect {
     public void logAfterThrowingRestMethodAccess(JoinPoint joinpoint, Throwable exception){
         log.info("Controller AfterReturn with signature {} is completed",joinpoint.getSignature());
         log.info("With exception {}",exception.getMessage());
+    }
+
+    @Around("@annotation(com.rscinema.finalproject.aspect.annotation.MeasureTime)")
+    public Object logAroundReturnMethodAccess(ProceedingJoinPoint joinPoint) throws Throwable {
+        Long startTime = System.currentTimeMillis();
+        log.info("Controller startTime {} {} ",startTime,joinPoint.getSignature());
+        Object returnValue = joinPoint.proceed();
+        Long endTime = System.currentTimeMillis();
+        log.info("Execution time is {} for controller {}",(endTime-startTime),joinPoint.getSignature());
+        return returnValue;
     }
 
 }
