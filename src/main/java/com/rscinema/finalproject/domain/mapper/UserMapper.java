@@ -12,10 +12,10 @@ public class UserMapper {
                 .id(user.getId())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
-                .gender(user.getGender()==null?"":user.getGender().getValue())
+                .gender(user.getGender() == null ? "" : user.getGender().getValue())
                 .email(user.getEmail())
                 .age(user.getAge())
-                .phoneNumber(user.getPhoneNumber()==null?"": user.getPhoneNumber())
+                .phoneNumber(user.getPhoneNumber() == null ? "" : user.getPhoneNumber())
                 .build();
     }
 

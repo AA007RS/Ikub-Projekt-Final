@@ -25,10 +25,11 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> registerUser(@Valid @RequestBody RegistrationFormDTO registrationFormDTO){
+    public ResponseEntity<UserDTO> registerUser(@Valid @RequestBody RegistrationFormDTO registrationFormDTO) {
         UserDTO toSave = userService.registerUser(registrationFormDTO);
         return new ResponseEntity<>(toSave, HttpStatus.CREATED);
     }
+
     @PutMapping("/update-details/{id}")
     public ResponseEntity<UserDTO> updateUserDetails(
             @PathVariable("id") Integer id,
@@ -49,12 +50,12 @@ public class UserController {
 
     //endpoint per userin normal qe sheh te dhenat e veta
     @GetMapping("/details/{id}")
-    public ResponseEntity<UserDTO> seeUserDetails(@PathVariable("id")Integer id){
+    public ResponseEntity<UserDTO> seeUserDetails(@PathVariable("id") Integer id) {
         return ResponseEntity.ok(userService.seeUserDetails(id));
     }
 
     @PutMapping("/deleteAccount/{id}")
-    public ResponseEntity<String> deleteAccount(@PathVariable("id")Integer id){
+    public ResponseEntity<String> deleteAccount(@PathVariable("id") Integer id) {
         return ResponseEntity.ok(userService.deleteAccount(id));
     }
 
@@ -64,17 +65,17 @@ public class UserController {
     }
 
     @GetMapping("admin/customers/deleted")
-    public ResponseEntity<List<UserDTO>> findAllDeletedCustomers(){
+    public ResponseEntity<List<UserDTO>> findAllDeletedCustomers() {
         return ResponseEntity.ok(userService.findAllDeletedCustomers());
     }
 
     @GetMapping("admin/customers/search")
-    public ResponseEntity<List<UserDTO>> search( @RequestBody UserSearchDTO dto){
+    public ResponseEntity<List<UserDTO>> search(@RequestBody UserSearchDTO dto) {
         return ResponseEntity.ok(userService.search(dto));
     }
 
     @PutMapping("admin/customers/reset-password/{id}")
-    public ResponseEntity<String> resetPasswordForUser(@PathVariable("id") Integer id){
+    public ResponseEntity<String> resetPasswordForUser(@PathVariable("id") Integer id) {
         return ResponseEntity.ok(userService.setPasswordDefault(id));
     }
 

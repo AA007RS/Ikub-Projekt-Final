@@ -34,8 +34,8 @@ public class Order extends BaseEntity<Integer> {
     @Column(name = "total_price")
     private Double totalPrice;
 
-    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    @JoinColumn(name = "payment_id", referencedColumnName = "id",unique = true)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "payment_id", referencedColumnName = "id", unique = true)
     private Payment payment;
 
     @Column(name = "closed")

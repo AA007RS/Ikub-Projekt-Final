@@ -20,6 +20,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
     @Modifying
     @Query("UPDATE Ticket t SET t.deleted = true where t.showTime.id = :showTime")
     void updateFromExpiredShowtime(@Param("showTime") Integer showTime);
+
     @Query("SELECT t FROM Ticket t where t.showTime.id = :sht AND " +
             "(t.reserved = :reserved OR :reserved IS NULL) AND " +
             "(t.rowNumber = :row OR :row IS NULL) " +
@@ -35,9 +36,9 @@ public interface TicketRepository extends JpaRepository<Ticket, Integer> {
     @Query("SELECT t from Ticket t WHERE " +
             "t.showTime.startDate <= :startDate AND " +
             "t.showTime.startTime < :startTime AND " +
-            "t.order.closed = false AND "+
+            "t.order.closed = false AND " +
             "t.deleted = false AND t.reserved = true"
-            )
+    )
     List<Ticket> findAllExpiredReservedTickets(@Param("startDate") LocalDate startDate,
                                                @Param("startTime") LocalTime startTime);
 

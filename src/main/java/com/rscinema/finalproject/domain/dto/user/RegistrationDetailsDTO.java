@@ -16,12 +16,12 @@ public class RegistrationDetailsDTO {
     private Integer id;
 
     @NotNull(message = "First Name must be filled!")
-    @Size(min = 3,message = "First name should have at least 3 characters")
+    @Size(min = 3, message = "First name should have at least 3 characters")
     private String firstName;
 
 
     @NotNull(message = "Last Name must be filled!")
-    @Size(min = 3,message = "Last name should have at least 3 characters")
+    @Size(min = 3, message = "Last name should have at least 3 characters")
     private String lastName;
 
     @NotEmpty(message = "Gender must not be empty!")

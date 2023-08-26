@@ -7,9 +7,10 @@ import java.util.List;
 import java.util.Optional;
 
 
-public interface GenreRepository extends JpaRepository<Genre,Integer> {
+public interface GenreRepository extends JpaRepository<Genre, Integer> {
 
     Optional<Genre> findByMovieGenreIgnoreCase(String genre);
+
     List<Genre> findAllByDeletedFalse();
 
 }

@@ -5,7 +5,7 @@ import com.rscinema.finalproject.domain.entity.Ticket;
 
 public class TicketMapper {
 
-    public static TicketDTO toDTO(Ticket ticket){
+    public static TicketDTO toDTO(Ticket ticket) {
         return TicketDTO.builder()
                 .id(ticket.getId())
                 .movie(ticket.getShowTime().getMovie().getTitle())

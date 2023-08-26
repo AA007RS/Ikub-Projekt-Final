@@ -6,14 +6,14 @@ import com.rscinema.finalproject.domain.entity.payment.PaymentMethod;
 
 public class PaymentMapper {
 
-    public static Payment toUpdate (Payment e, PaymentDTO d){
+    public static Payment toUpdate(Payment e, PaymentDTO d) {
         PaymentMethod paymentMethod = PaymentMethod.fromValue(d.getPaymentMethod());
         e.setPaymentMethod(paymentMethod);
         e.setAmount(d.getAmount());
-        return  e;
+        return e;
     }
 
-    public static PaymentDTO toDTO (Payment entity){
+    public static PaymentDTO toDTO(Payment entity) {
         return PaymentDTO.builder()
                 .id(entity.getId())
                 .amount(entity.getAmount())

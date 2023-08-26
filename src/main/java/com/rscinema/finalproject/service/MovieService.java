@@ -9,13 +9,22 @@ import java.util.List;
 public interface MovieService {
 
     MovieDTO create(MovieDTO movieDTO);
+
     Movie findById(Integer id);
+
     MovieDTO findExistingById(Integer id);
-    public List<MovieDTO> findAll();
+
+    List<MovieDTO> findAll();
+
     List<MovieDTO> findAllExistingByGenreId(Integer id);
+
     List<MovieDTO> searchMoviesAdmin(MovieSearchByAdminDTO dto);
+
     List<MovieDTO> searchMoviesUser(String name);
-    MovieDTO update(Integer id,MovieDTO movieDTO);
+
+    MovieDTO update(Integer id, MovieDTO movieDTO);
+
     void softDelete(Integer id);
+
     void restore(Integer id);
 }

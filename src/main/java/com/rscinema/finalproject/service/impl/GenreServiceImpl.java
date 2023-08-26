@@ -20,8 +20,8 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public GenreDTO create(GenreDTO genreDTO) {
-        if(genreRepository.findByMovieGenreIgnoreCase(genreDTO.getName()).isPresent()){
-            throw new PresentException(String.format("Genre %s is present!",genreDTO.getName().toUpperCase()));
+        if (genreRepository.findByMovieGenreIgnoreCase(genreDTO.getName()).isPresent()) {
+            throw new PresentException(String.format("Genre %s is present!", genreDTO.getName().toUpperCase()));
         }
         Genre genre = GenreMapper.toEntity(genreDTO);
         genreRepository.save(genre);
@@ -32,7 +32,7 @@ public class GenreServiceImpl implements GenreService {
     public Genre findById(Integer id) {
         return genreRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String
-                        .format("Genre with id %s not found!",id)));
+                        .format("Genre with id %s not found!", id)));
     }
 
 
@@ -49,7 +49,7 @@ public class GenreServiceImpl implements GenreService {
     public void softDelete(Integer id) {
         Genre toDelete = findById(id);
         toDelete.setDeleted(true);
-        for (Movie movie: toDelete.getMovies()){
+        for (Movie movie : toDelete.getMovies()) {
             movie.setDeleted(true);
         }
         genreRepository.save(toDelete);

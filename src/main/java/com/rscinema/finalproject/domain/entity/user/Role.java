@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.Arrays;
+
 @Getter
 @AllArgsConstructor
 public enum Role {
@@ -13,11 +14,11 @@ public enum Role {
     ADMIN("ADMIN");
     private final String value;
 
-    public static Role fromValue(String role){
+    public static Role fromValue(String role) {
         return Arrays.stream(Role.values())
-                .filter(r->r.value.equalsIgnoreCase(role))
+                .filter(r -> r.value.equalsIgnoreCase(role))
                 .findFirst()
-                .orElseThrow(()->new ResourceNotFoundException(String
-                        .format("Role %s not found!",role)));
+                .orElseThrow(() -> new ResourceNotFoundException(String
+                        .format("Role %s not found!", role)));
     }
 }

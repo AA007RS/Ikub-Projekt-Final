@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findByEmail(dto.getEmail()).isPresent()) {
             throw new PresentException("Email already taken!");
         }
-        if (!dto.getPassword().equals(dto.getReConfirmPassword())){
+        if (!dto.getPassword().equals(dto.getReConfirmPassword())) {
             throw new PasswordException("Passwords must match!");
         }
         User user = User.builder()

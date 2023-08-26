@@ -28,13 +28,13 @@ public class RoomServiceImpl implements RoomService {
     public Room findById(Integer id) {
         return roomRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format(
-                        "Room with id %s is not found!",id
+                        "Room with id %s is not found!", id
                 )));
     }
 
     @Override
     public List<RoomDTO> searchRoom(RoomSearchDTO dto) {
-        return roomRepository.searchRooms(dto.getRoomName(),dto.getDeleted())
+        return roomRepository.searchRooms(dto.getRoomName(), dto.getDeleted())
                 .stream()
                 .map(RoomMapper::toDTO)
                 .toList();
@@ -42,7 +42,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public RoomDTO update(RoomDTO dto) {
-        Room toUpdate = RoomMapper.toUpdate(findById(dto.getId()),dto);
+        Room toUpdate = RoomMapper.toUpdate(findById(dto.getId()), dto);
         return RoomMapper.toDTO(roomRepository.save(toUpdate));
     }
 

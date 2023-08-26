@@ -30,8 +30,8 @@ public class Room extends BaseEntity<Integer> {
 
     @OneToMany(mappedBy = "room",
             fetch = FetchType.LAZY,
-            cascade ={CascadeType.DETACH, CascadeType.PERSIST,
-            CascadeType.MERGE, CascadeType.REFRESH})
+            cascade = {CascadeType.DETACH, CascadeType.PERSIST,
+                    CascadeType.MERGE, CascadeType.REFRESH})
     private List<ShowTime> showTimes;
 
 

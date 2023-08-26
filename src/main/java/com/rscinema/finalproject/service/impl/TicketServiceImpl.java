@@ -24,10 +24,10 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public List<TicketDTO> watchAndFilterTicketsOfShowTimeAdmin(Integer showTimeId, boolean reserved, Integer row) {
         ShowTime showTime = showTimeRepository.findById(showTimeId)
-                .orElseThrow(()-> new ResourceNotFoundException(String.format(
-                       " Showtime with id %s not exist",showTimeId
+                .orElseThrow(() -> new ResourceNotFoundException(String.format(
+                        " Showtime with id %s not exist", showTimeId
                 )));
-        return ticketRepository.watchTicketsAdmin(showTime.getId(),reserved,row).stream()
+        return ticketRepository.watchTicketsAdmin(showTime.getId(), reserved, row).stream()
                 .map(TicketMapper::toDTO)
                 .toList();
     }
@@ -35,8 +35,8 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public Ticket findById(Integer id) {
         return ticketRepository.findById(id).orElseThrow(
-                ()-> new ResourceNotFoundException(String.format(
-                        "Ticket with id %s not found!",id
+                () -> new ResourceNotFoundException(String.format(
+                        "Ticket with id %s not found!", id
                 )));
     }
 
@@ -50,8 +50,8 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public List<TicketDTO> retrieveAllByShowtime(Integer showTimeId) {
         ShowTime showTime = showTimeRepository.findById(showTimeId)
-                .orElseThrow(()->new ResourceNotFoundException(String.format(
-                        "Showtime with id %s not found!",showTimeId
+                .orElseThrow(() -> new ResourceNotFoundException(String.format(
+                        "Showtime with id %s not found!", showTimeId
                 )));
 
         return ticketRepository.findAllByShowTimeAndDeletedFalseAndShowTime_FinishedIsFalse(showTime).stream()

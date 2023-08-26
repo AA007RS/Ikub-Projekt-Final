@@ -17,14 +17,14 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @GetMapping("/byId/{id}")
-    public ResponseEntity<PaymentDTO> findById(@PathVariable("id")Integer id){
+    public ResponseEntity<PaymentDTO> findById(@PathVariable("id") Integer id) {
         return ResponseEntity.ok(paymentService.findById(id));
     }
 
     @GetMapping("/admin/search")
     public ResponseEntity<List<PaymentDTO>> search(@RequestParam(required = false) LocalDate from,
-                                                   @RequestParam(required = false) LocalDate to){
-        return ResponseEntity.ok(paymentService.viewCompletedPaymentsFromTo(from,to));
+                                                   @RequestParam(required = false) LocalDate to) {
+        return ResponseEntity.ok(paymentService.viewCompletedPaymentsFromTo(from, to));
     }
 
 }

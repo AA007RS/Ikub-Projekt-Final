@@ -5,7 +5,7 @@ import com.rscinema.finalproject.domain.entity.Genre;
 
 public class GenreMapper {
 
-    public static GenreDTO toDTO(Genre genre){
+    public static GenreDTO toDTO(Genre genre) {
 
         return GenreDTO.builder()
                 .id(genre.getId())
@@ -13,7 +13,7 @@ public class GenreMapper {
                 .build();
     }
 
-    public static Genre toEntity(GenreDTO genreDTO){
+    public static Genre toEntity(GenreDTO genreDTO) {
         return Genre.builder()
                 .movieGenre(genreDTO.getName().toUpperCase())
                 .build();

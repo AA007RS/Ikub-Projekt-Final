@@ -8,7 +8,7 @@ import java.util.List;
 
 public class OrderMapper {
 
-    public static OrderDTO toDTO(Order order){
+    public static OrderDTO toDTO(Order order) {
         List<TicketDTO> ticketDTOList = order.getTickets().stream().map(TicketMapper::toDTO).toList();
         return OrderDTO.builder()
                 .id(order.getId())

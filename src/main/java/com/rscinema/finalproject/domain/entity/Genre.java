@@ -21,10 +21,10 @@ public class Genre extends BaseEntity<Integer> {
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "name",unique = true)
+    @Column(name = "name", unique = true)
     private String movieGenre;
 
-    @OneToMany(mappedBy = "genre",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "genre", cascade = CascadeType.ALL)
     private List<Movie> movies;
 
 }

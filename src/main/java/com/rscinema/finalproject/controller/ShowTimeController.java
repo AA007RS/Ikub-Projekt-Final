@@ -20,17 +20,17 @@ public class ShowTimeController {
     private final ShowTimeService showTimeService;
 
     @GetMapping("/admin/{id}")
-    public ResponseEntity<ShowTimeDTO> findByIdAdminView(@PathVariable("id")Integer id){
+    public ResponseEntity<ShowTimeDTO> findByIdAdminView(@PathVariable("id") Integer id) {
         return ResponseEntity.ok(ShowTimeMapper.toDTOShowTime(showTimeService.findById(id)));
     }
 
     @GetMapping("/admin/available/byMovie/{id}")
-    public ResponseEntity<List<ShowTimeDTO>> findByMovieIdAdminView(@PathVariable("id")Integer id){
+    public ResponseEntity<List<ShowTimeDTO>> findByMovieIdAdminView(@PathVariable("id") Integer id) {
         return ResponseEntity.ok(showTimeService.findByMovieIdAdminView(id));
     }
 
     @GetMapping("/admin/available/byRoom/{id}")
-    public ResponseEntity<List<ShowTimeDTO>> findByRoomId(@PathVariable("id")Integer id){
+    public ResponseEntity<List<ShowTimeDTO>> findByRoomId(@PathVariable("id") Integer id) {
         return ResponseEntity.ok(showTimeService.findByRoomId(id));
     }
 
@@ -52,31 +52,31 @@ public class ShowTimeController {
     }
 
     @PutMapping("/admin/delete/{id}")
-    public ResponseEntity<String> delete(@PathVariable("id")Integer id){
+    public ResponseEntity<String> delete(@PathVariable("id") Integer id) {
         return ResponseEntity.ok(showTimeService.delete(id));
     }
 
     @PutMapping("/admin/restore/{id}")
-    public ResponseEntity<String> restore(@PathVariable("id")Integer id){
+    public ResponseEntity<String> restore(@PathVariable("id") Integer id) {
         showTimeService.restore(id);
-        return new ResponseEntity<>(String.format("ShowTime with id %s restored!",id),
+        return new ResponseEntity<>(String.format("ShowTime with id %s restored!", id),
                 HttpStatus.OK);
     }
 
     @GetMapping("/customer/{id}")
     public ResponseEntity<ShowTimeCustomerDTO> findByIdCustomerView(@PathVariable("id")
-                                                                    Integer id){
+                                                                    Integer id) {
         return ResponseEntity.ok(showTimeService.findByIdCustomerView(id));
     }
 
     @GetMapping("/customer/byMovie/{id}")
-    public ResponseEntity<List<ShowTimeCustomerDTO>> findMovieByIdCustomerView(@PathVariable("id")Integer id){
+    public ResponseEntity<List<ShowTimeCustomerDTO>> findMovieByIdCustomerView(@PathVariable("id") Integer id) {
         return ResponseEntity.ok(showTimeService.findByMovieIdCustomerView(id));
     }
 
     @GetMapping("/customer/search")
     public ResponseEntity<List<ShowTimeCustomerDTO>> searchCustomerView(@RequestParam(required = false) String movie,
-                                                                        @RequestParam(required = false) LocalDate date){
-        return ResponseEntity.ok(showTimeService.searchCustomerView(movie,date));
+                                                                        @RequestParam(required = false) LocalDate date) {
+        return ResponseEntity.ok(showTimeService.searchCustomerView(movie, date));
     }
 }

@@ -29,7 +29,7 @@ public class MovieMapper {
                 .build();
     }
 
-    public static Movie toUpdate(Movie e, MovieDTO d){
+    public static Movie toUpdate(Movie e, MovieDTO d) {
         e.setTitle(d.getTitle());
         e.setDirector(d.getDirector());
         e.setLength(d.getLength());

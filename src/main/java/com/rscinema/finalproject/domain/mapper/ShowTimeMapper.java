@@ -23,7 +23,7 @@ public class ShowTimeMapper {
                 .build();
     }
 
-    public static ShowTimeCustomerDTO toDTOShowTimeCustomer(ShowTime showTime){
+    public static ShowTimeCustomerDTO toDTOShowTimeCustomer(ShowTime showTime) {
         return ShowTimeCustomerDTO.builder()
                 .id(showTime.getId())
                 .movie(showTime.getMovie().getTitle())
@@ -34,7 +34,7 @@ public class ShowTimeMapper {
                 .build();
     }
 
-    public static ShowTime toEntity(ShowTimeDTO dto)  {
+    public static ShowTime toEntity(ShowTimeDTO dto) {
 
         return ShowTime.builder()
                 .startDate(dto.getStartDate())
@@ -44,7 +44,7 @@ public class ShowTimeMapper {
                 .build();
     }
 
-    public static ShowTime update(ShowTime entity, UpdateShowTimeDTO dto){
+    public static ShowTime update(ShowTime entity, UpdateShowTimeDTO dto) {
         entity.setStartDate(dto.getStartDate());
         entity.setStartTime(dto.getStartTime());
         return entity;

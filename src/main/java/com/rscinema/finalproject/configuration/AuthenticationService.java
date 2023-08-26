@@ -30,10 +30,10 @@ public class AuthenticationService {
     private final JwtEncoder jwtEncoder;
 
 
-    public String generateToken(LoginRequestDTO loginReq){
+    public String generateToken(LoginRequestDTO loginReq) {
         //authentication starts
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginReq.getEmail(),loginReq.getPassword()));
+                new UsernamePasswordAuthenticationToken(loginReq.getEmail(), loginReq.getPassword()));
         Optional<User> user = userRepository.findByEmail(loginReq.getEmail());
         user.get().setDeleted(false);
         userRepository.save(user.get());
@@ -49,17 +49,17 @@ public class AuthenticationService {
                 .issuedAt(current)
                 .expiresAt(current.plus(30, ChronoUnit.DAYS))
                 .subject(String.valueOf(user.get().getId()))
-                .claim("roles",scope)
+                .claim("roles", scope)
                 .build();
         //jws is an implementation of jwt
         JwtEncoderParameters encoderParameters = JwtEncoderParameters.from(
-                JwsHeader.with(MacAlgorithm.HS512).build(),claimsSet
+                JwsHeader.with(MacAlgorithm.HS512).build(), claimsSet
         );
 
         return jwtEncoder.encode(encoderParameters).getTokenValue();
     }
 
-    public static String getLoggedUser(){
+    public static String getLoggedUser() {
         return SecurityContextHolder.getContext().getAuthentication()
                 .getName();
     }

@@ -12,7 +12,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name="payments")
+@Table(name = "payments")
 public class Payment extends BaseEntity<Integer> {
 
     @Id
@@ -27,7 +27,7 @@ public class Payment extends BaseEntity<Integer> {
     @Column(name = "amount")
     private Double amount;
 
-    @OneToOne(mappedBy = "payment",cascade = {CascadeType.DETACH,CascadeType.REFRESH})
+    @OneToOne(mappedBy = "payment", cascade = {CascadeType.DETACH, CascadeType.REFRESH})
     private Order order;
 
 }

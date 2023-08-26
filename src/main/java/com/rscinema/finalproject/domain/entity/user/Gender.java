@@ -16,12 +16,12 @@ public enum Gender {
 
     private final String value;
 
-    public static Gender fromValue(String gender){
+    public static Gender fromValue(String gender) {
         return Arrays.stream(Gender.values())
-                .filter(g->g.value.equalsIgnoreCase(gender))
+                .filter(g -> g.value.equalsIgnoreCase(gender))
                 .findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException(String.format(
-                        "Gender %s not found!",gender
+                        "Gender %s not found!", gender
                 )));
     }
 }

@@ -70,7 +70,7 @@ public class SecurityConfiguration {
                                 "/api/showtimes/customer/**",
                                 "/api/tickets/customer/**",
                                 "/api/order/customer/**")
-                                                            .hasAuthority("ROLE_".concat(Role.CUSTOMER.getValue()))
+                        .hasAuthority("ROLE_".concat(Role.CUSTOMER.getValue()))
                         .requestMatchers("/api/users/admin/**",
                                 "/api/genres/admin/**",
                                 "/api/movies/admin/**",
@@ -78,7 +78,7 @@ public class SecurityConfiguration {
                                 "/api/showtimes/admin/**",
                                 "/api/tickets/admin/**",
                                 "/api/order/admin/**")
-                                                        .hasAuthority("ROLE_".concat(Role.ADMIN.getValue()))
+                        .hasAuthority("ROLE_".concat(Role.ADMIN.getValue()))
                         .anyRequest().authenticated()
                 )
                 .httpBasic(withDefaults()).

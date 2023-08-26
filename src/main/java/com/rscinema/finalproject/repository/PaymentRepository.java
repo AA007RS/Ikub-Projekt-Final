@@ -9,9 +9,9 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface PaymentRepository extends JpaRepository<Payment,Integer> {
+public interface PaymentRepository extends JpaRepository<Payment, Integer> {
 
-    @Query("SELECT p from Payment p WHERE "+
+    @Query("SELECT p from Payment p WHERE " +
             "(p.createdAt > :from OR :from is NULL) AND " +
             "(p.createdAt < :to OR :to Is Null) AND" +
             " p.order.closed = true")

@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface PaymentService {
     PaymentDTO findById(Integer id);
+
     List<PaymentDTO> viewCompletedPaymentsFromTo(LocalDate from, LocalDate to);
 }

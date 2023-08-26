@@ -12,14 +12,22 @@ import java.util.List;
 public interface UserService {
 
     UserDTO registerUser(RegistrationFormDTO dto);
+
     User findUserById(Integer id);
+
     User findExistingById(Integer id);
+
     List<UserDTO> findAllDeletedCustomers();
-    List<UserDTO> findAllExistingCustomers();
+
     List<UserDTO> search(UserSearchDTO dto);
+
     UserDTO updateDetails(RegistrationDetailsDTO dto);
+
     String updatePassword(ChangePasswordFormDTO dto);
+
     String setPasswordDefault(Integer id);
+
     UserDTO seeUserDetails(Integer id);
+
     String deleteAccount(Integer id);
 }

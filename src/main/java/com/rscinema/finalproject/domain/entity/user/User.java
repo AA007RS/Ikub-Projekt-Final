@@ -54,7 +54,7 @@ public class User extends BaseEntity<Integer> implements UserDetails {
     @Column(name = "role")
     private Role role;
 
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Order> orders;
 
 
@@ -72,7 +72,9 @@ public class User extends BaseEntity<Integer> implements UserDetails {
     }
 
     @Override
-    public String getPassword(){return password; }
+    public String getPassword() {
+        return password;
+    }
 
     @Override
     public boolean isAccountNonExpired() {

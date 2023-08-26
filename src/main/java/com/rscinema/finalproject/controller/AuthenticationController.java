@@ -17,7 +17,7 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
-    public String loginWithToken(@RequestBody LoginRequestDTO loginReq){
+    public String loginWithToken(@RequestBody LoginRequestDTO loginReq) {
         return "Bearer ".concat(authenticationService.generateToken(loginReq));
     }
 }

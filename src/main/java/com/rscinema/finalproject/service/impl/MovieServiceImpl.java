@@ -26,8 +26,8 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public MovieDTO create(MovieDTO movieDTO) {
         Genre genre = genreRepository.findById(movieDTO.getGenreId())
-                .orElseThrow(()-> new ResourceNotFoundException(String.format(
-                        "Genre with id %s not found!",movieDTO.getGenreId()
+                .orElseThrow(() -> new ResourceNotFoundException(String.format(
+                        "Genre with id %s not found!", movieDTO.getGenreId()
                 )));
 
         Movie toSave = MovieMapper.toEntity(movieDTO);
@@ -41,8 +41,8 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public Movie findById(Integer id) {
         return movieRepository.findById(id)
-                .orElseThrow(()->new ResourceNotFoundException(String
-                        .format("Movie with id %s not found!",id)));
+                .orElseThrow(() -> new ResourceNotFoundException(String
+                        .format("Movie with id %s not found!", id)));
 
     }
 
@@ -50,7 +50,7 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public List<MovieDTO> searchMoviesAdmin(MovieSearchByAdminDTO dto) {
 
-        List<Movie> movies = movieRepository.searchMovies(dto.getTitle(),dto.getDeleted());
+        List<Movie> movies = movieRepository.searchMovies(dto.getTitle(), dto.getDeleted());
 //        if(dto.getName()==null && dto.getDeleted()==null){
 //            return findAll();
 //        } else if (dto.getName()==null ) {
@@ -80,11 +80,11 @@ public class MovieServiceImpl implements MovieService {
 
         Genre genreToFind = genreRepository.findById(movieDTO.getGenreId()).
                 orElseThrow(() -> new ResourceNotFoundException(String.format(
-                        "Genre with id %s not found!",movieDTO.getGenreId()
+                        "Genre with id %s not found!", movieDTO.getGenreId()
                 )));
         toFind.setGenre(genreToFind);
 
-        Movie toReturn = MovieMapper.toUpdate(toFind,movieDTO);
+        Movie toReturn = MovieMapper.toUpdate(toFind, movieDTO);
 
 
         return MovieMapper.toDTO(movieRepository.save(toReturn));
@@ -108,7 +108,7 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public List<MovieDTO> searchMoviesUser(String name) {
-        return movieRepository.findAllByTitleContainingIgnoreCaseAndDeletedOrderByYearReleasedDesc(name,false)
+        return movieRepository.findAllByTitleContainingIgnoreCaseAndDeletedOrderByYearReleasedDesc(name, false)
                 .stream()
                 .map(MovieMapper::toDTO)
                 .toList();
@@ -119,8 +119,8 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public MovieDTO findExistingById(Integer id) {
         return MovieMapper.toDTO(movieRepository.findByIdAndDeletedIsFalse(id)
-                .orElseThrow(()-> new ResourceNotFoundException(String.format(
-                        "Movie with id %s not found!",id
+                .orElseThrow(() -> new ResourceNotFoundException(String.format(
+                        "Movie with id %s not found!", id
                 ))));
     }
 
@@ -132,7 +132,7 @@ public class MovieServiceImpl implements MovieService {
 
         Genre genreToFind = genreRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException(String.format(
-                        "Genre with id %s not found!",id
+                        "Genre with id %s not found!", id
                 ))
         );
         return movieRepository.findAllByGenre_IdAndGenre_DeletedIsFalseAndDeletedIsFalse(id).stream()
