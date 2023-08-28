@@ -82,13 +82,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDTO> findAllExistingCustomers() {
-        return userRepository.findAllByRoleAndDeletedFalse(Role.fromValue("CUSTOMER")).stream()
-                .map(UserMapper::toDTO)
-                .toList();
-    }
-
-    @Override
     public List<UserDTO> search(UserSearchDTO dto) {
         List<User> customers = userRepository.searchUsers(dto.getEmail(),
                 dto.getDeleted(),
