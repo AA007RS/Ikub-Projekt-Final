@@ -1,7 +1,6 @@
 package com.rscinema.finalproject.service.impl;
 
 import com.rscinema.finalproject.domain.dto.movie.MovieDTO;
-import com.rscinema.finalproject.domain.dto.movie.MovieSearchByAdminDTO;
 import com.rscinema.finalproject.domain.entity.Movie;
 import com.rscinema.finalproject.domain.entity.Genre;
 import com.rscinema.finalproject.domain.exception.ResourceNotFoundException;
@@ -20,8 +19,6 @@ public class MovieServiceImpl implements MovieService {
 
     private final MovieRepository movieRepository;
     private final GenreRepository genreRepository;
-
-    //nje film krijohet vetem nga nje admin
 
     @Override
     public MovieDTO create(MovieDTO movieDTO) {
@@ -48,25 +45,15 @@ public class MovieServiceImpl implements MovieService {
 
     //admini kerkon filma sipas 2 fields: name dhe deleted
     @Override
-    public List<MovieDTO> searchMoviesAdmin(MovieSearchByAdminDTO dto) {
+    public List<MovieDTO> searchMoviesAdmin(String title, boolean deleted) {
 
-        List<Movie> movies = movieRepository.searchMovies(dto.getTitle(), dto.getDeleted());
-//        if(dto.getName()==null && dto.getDeleted()==null){
-//            return findAll();
-//        } else if (dto.getName()==null ) {
-//            movies = movieRepository.findAllByDeleted(dto.getDeleted());
-//        }else if (dto.getDeleted()==null) {
-//            movies = movieRepository.findAllByTitleContainingIgnoreCase(dto.getName());
-//        }else{
-//            movies = movieRepository.findAllByTitleContainingIgnoreCaseAndDeleted(dto.getName(),dto.getDeleted());
-//        }
+        List<Movie> movies = movieRepository.searchMovies(title,deleted);
         return movies.stream()
                 .map(MovieMapper::toDTO)
                 .toList();
     }
 
     // ndihmese tek searchi i adminit
-    @Override
     public List<MovieDTO> findAll() {
         return movieRepository.findAll().stream()
                 .map(MovieMapper::toDTO)
@@ -112,16 +99,6 @@ public class MovieServiceImpl implements MovieService {
                 .stream()
                 .map(MovieMapper::toDTO)
                 .toList();
-    }
-
-
-    //e akseson useri sepse ai sheh vetem filmat ekzistues
-    @Override
-    public MovieDTO findExistingById(Integer id) {
-        return MovieMapper.toDTO(movieRepository.findByIdAndDeletedIsFalse(id)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format(
-                        "Movie with id %s not found!", id
-                ))));
     }
 
 

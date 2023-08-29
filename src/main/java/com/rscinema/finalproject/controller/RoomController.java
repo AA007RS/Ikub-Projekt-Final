@@ -2,7 +2,6 @@ package com.rscinema.finalproject.controller;
 
 
 import com.rscinema.finalproject.domain.dto.room.RoomDTO;
-import com.rscinema.finalproject.domain.dto.room.RoomSearchDTO;
 import com.rscinema.finalproject.domain.entity.room.Room;
 import com.rscinema.finalproject.domain.mapper.RoomMapper;
 import com.rscinema.finalproject.service.RoomService;
@@ -31,8 +30,9 @@ public class RoomController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<RoomDTO>> search(@RequestBody RoomSearchDTO dto) {
-        return ResponseEntity.ok(roomService.searchRoom(dto));
+    public ResponseEntity<List<RoomDTO>> search(@RequestParam(required = false) String name,
+                                                @RequestParam(required = false) boolean deleted) {
+        return ResponseEntity.ok(roomService.searchRoom(name,deleted));
     }
 
     @PutMapping("/{id}")

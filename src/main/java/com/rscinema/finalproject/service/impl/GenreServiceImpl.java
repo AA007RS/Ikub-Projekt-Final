@@ -18,17 +18,7 @@ import java.util.List;
 public class GenreServiceImpl implements GenreService {
     private final GenreRepository genreRepository;
 
-    @Override
-    public GenreDTO create(GenreDTO genreDTO) {
-        if (genreRepository.findByMovieGenreIgnoreCase(genreDTO.getName()).isPresent()) {
-            throw new PresentException(String.format("Genre %s is present!", genreDTO.getName().toUpperCase()));
-        }
-        Genre genre = GenreMapper.toEntity(genreDTO);
-        genreRepository.save(genre);
-        return GenreMapper.toDTO(genre);
-    }
-
-    @Override
+    //ndihmes
     public Genre findById(Integer id) {
         return genreRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(String
@@ -55,7 +45,7 @@ public class GenreServiceImpl implements GenreService {
         genreRepository.save(toDelete);
     }
 
-    //ktu filmat qe jane soft deleted do e duhen te behn restore manualisht
+    //ktu filmat qe jane soft deleted do te duhen te behen restore manualisht
     @Override
     public void restore(Integer id) {
         Genre toRestore = findById(id);

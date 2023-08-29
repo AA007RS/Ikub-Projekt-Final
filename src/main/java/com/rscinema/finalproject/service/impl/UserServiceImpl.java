@@ -64,21 +64,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findExistingById(Integer id) {
         return userRepository.findByIdAndDeletedFalseAndRole(id, Role.CUSTOMER)
-                .orElseThrow(() -> new ResourceNotFoundException(String.format(
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Not found!"
-                )));
-    }
-
-    @Override
-    public List<UserDTO> findAllDeletedCustomers() {
-        List<User> customers = userRepository.findAllByRoleAndDeletedTrue(Role.fromValue("CUSTOMER"));
-        if (customers.isEmpty()) {
-            throw new NoContentException("No content for this page!");
-        }
-        return customers
-                .stream()
-                .map(UserMapper::toDTO)
-                .toList();
+                ));
     }
 
     @Override

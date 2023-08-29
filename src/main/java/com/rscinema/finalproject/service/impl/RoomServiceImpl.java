@@ -1,7 +1,6 @@
 package com.rscinema.finalproject.service.impl;
 
 import com.rscinema.finalproject.domain.dto.room.RoomDTO;
-import com.rscinema.finalproject.domain.dto.room.RoomSearchDTO;
 import com.rscinema.finalproject.domain.entity.room.Room;
 import com.rscinema.finalproject.domain.exception.ResourceNotFoundException;
 import com.rscinema.finalproject.domain.mapper.RoomMapper;
@@ -33,8 +32,8 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public List<RoomDTO> searchRoom(RoomSearchDTO dto) {
-        return roomRepository.searchRooms(dto.getRoomName(), dto.getDeleted())
+    public List<RoomDTO> searchRoom(String name, boolean deleted) {
+        return roomRepository.searchRooms(name, deleted)
                 .stream()
                 .map(RoomMapper::toDTO)
                 .toList();

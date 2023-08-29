@@ -1,6 +1,8 @@
 package com.rscinema.finalproject.controller;
 
 import com.rscinema.finalproject.domain.dto.ticket.TicketDTO;
+import com.rscinema.finalproject.domain.entity.Ticket;
+import com.rscinema.finalproject.domain.mapper.TicketMapper;
 import com.rscinema.finalproject.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

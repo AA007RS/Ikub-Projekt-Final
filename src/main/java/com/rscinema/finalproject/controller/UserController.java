@@ -60,13 +60,8 @@ public class UserController {
     }
 
     @GetMapping("admin/customers/{id}")
-    public ResponseEntity<User> findUserById(@PathVariable("id") Integer id) {
-        return ResponseEntity.ok(userService.findUserById(id));
-    }
-
-    @GetMapping("admin/customers/deleted")
-    public ResponseEntity<List<UserDTO>> findAllDeletedCustomers() {
-        return ResponseEntity.ok(userService.findAllDeletedCustomers());
+    public ResponseEntity<UserDTO> findUserById(@PathVariable("id") Integer id) {
+        return ResponseEntity.ok(UserMapper.toDTO(userService.findUserById(id)));
     }
 
     @GetMapping("admin/customers/search")

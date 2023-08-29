@@ -17,17 +17,6 @@ public class GenreController {
 
     private final GenreServiceImpl genreService;
 
-    @PostMapping()
-    public ResponseEntity<GenreDTO> createIfNotPresent(@RequestBody GenreDTO genreDTO) {
-        return ResponseEntity.ok(genreService.create(genreDTO));
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<GenreDTO> findById(@PathVariable("id") Integer id) {
-        GenreDTO toReturn = GenreMapper.toDTO(genreService.findById(id));
-        return ResponseEntity.ok(toReturn);
-    }
-
     @GetMapping()
     public ResponseEntity<List<GenreDTO>> findAllPresent() {
         return ResponseEntity.ok(genreService.findAllPresent());

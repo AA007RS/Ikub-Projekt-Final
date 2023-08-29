@@ -1,7 +1,6 @@
 package com.rscinema.finalproject.service;
 
 import com.rscinema.finalproject.domain.dto.movie.MovieDTO;
-import com.rscinema.finalproject.domain.dto.movie.MovieSearchByAdminDTO;
 import com.rscinema.finalproject.domain.entity.Movie;
 
 import java.util.List;
@@ -12,13 +11,9 @@ public interface MovieService {
 
     Movie findById(Integer id);
 
-    MovieDTO findExistingById(Integer id);
-
-    List<MovieDTO> findAll();
-
     List<MovieDTO> findAllExistingByGenreId(Integer id);
 
-    List<MovieDTO> searchMoviesAdmin(MovieSearchByAdminDTO dto);
+    List<MovieDTO> searchMoviesAdmin(String title, boolean deleted);
 
     List<MovieDTO> searchMoviesUser(String name);
 

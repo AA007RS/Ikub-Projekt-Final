@@ -17,8 +17,6 @@ public interface UserService {
 
     User findExistingById(Integer id);
 
-    List<UserDTO> findAllDeletedCustomers();
-
     List<UserDTO> search(UserSearchDTO dto);
 
     UserDTO updateDetails(RegistrationDetailsDTO dto);

@@ -7,11 +7,6 @@ import java.util.List;
 
 public interface GenreService {
 
-
-    GenreDTO create(GenreDTO genreDTO);
-
-    Genre findById(Integer id);
-
     List<GenreDTO> findAllPresent();
 
     void softDelete(Integer id);
